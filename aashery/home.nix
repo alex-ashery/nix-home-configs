@@ -83,4 +83,5 @@
   };
 
   home.file.".hm-xsession".source = ./hm-xsession;
+  home.file.".test".source = ./test;
 }
