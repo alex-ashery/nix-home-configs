@@ -81,4 +81,6 @@
       };
     };
   };
+
+  home.file.".hm-xsession".source = ./hm-xsession;
 }
