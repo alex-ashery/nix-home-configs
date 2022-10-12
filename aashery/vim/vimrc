@@ -1,0 +1,15 @@
+highlight Comment cterm=bold
+set linebreak
+set wrap
+set wildmode=longest:list,full
+set smarttab
+set cursorline
+set ruler
+
+" search
+set hlsearch
+set incsearch
+
+filetype plugin on
+syntax on
+set shellcmdflag=-ic
