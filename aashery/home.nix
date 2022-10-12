@@ -26,7 +26,7 @@
 
       settings = {
         number = true;
-        relativenumber = true;
+        relativenumber = false;
         expandtab = true;
         smartcase = true;
       };
