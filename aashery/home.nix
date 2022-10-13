@@ -8,6 +8,7 @@
     packages = with pkgs; [
       libnotify
       vlc
+      pavucontrol
     ];
     sessionVariables = {
       EDITOR = "vim";
@@ -80,8 +81,10 @@
         colors.webpage.darkmode.enabled = true;
       };
     };
+    brave.enable = true;
   };
 
   home.file.".hm-xsession".source = ./hm-xsession;
-  home.file.".test".source = ./test;
+  home.file.".awesome".source = ./awesome;
+  home.file.".awesome".recursive = true;
 }
