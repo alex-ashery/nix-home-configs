@@ -41,7 +41,7 @@
       userName = "alex-ashery";
       userEmail = "alexander.ashery@gmail.com";
       extraConfig = {
-        credential.helper = "!pass git/alex-ashery";
+        credential.helper = "!pass git/credential";
         };
     };
     kitty = {
