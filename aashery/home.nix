@@ -9,6 +9,7 @@
       libnotify
       vlc
       pavucontrol
+      awesome
     ];
     sessionVariables = {
       EDITOR = "vim";
@@ -84,7 +85,9 @@
     brave.enable = true;
   };
 
-  home.file.".hm-xsession".source = ./hm-xsession;
-  home.file.".awesome".source = ./awesome;
-  home.file.".awesome".recursive = true;
+  home.file = {
+    ".hm-xsession".source = ./hm-xsession;
+    ".awesome".source = ./awesome;
+    ".awesome".recursive = true;
+  };
 }
