@@ -11,6 +11,7 @@
       pavucontrol
       awesome
       pass
+      spotify-tui
     ];
     sessionVariables = {
       EDITOR = "vim";
@@ -41,7 +42,7 @@
       userName = "alex-ashery";
       userEmail = "alexander.ashery@gmail.com";
       extraConfig = {
-        credential.helper = "!pass git/credential";
+        credential.helper = "!pass git-creds";
         };
     };
     kitty = {
@@ -96,5 +97,16 @@
     ".hm-xsession".source = ./hm-xsession;
     ".awesome".source = ./awesome;
     ".awesome".recursive = true;
+  };
+
+  services.spotifyd = {
+    enable = true;
+    settings = {
+      spotifyd = {
+        username = "zyxama@gmail.com";
+        password_cmd = "/home/aashery/.nix-profile/bin/pass spotify";
+        backend = "pulseaudio";
+      };
+    };
   };
 }
