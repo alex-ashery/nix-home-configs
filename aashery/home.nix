@@ -10,6 +10,7 @@
       vlc
       pavucontrol
       awesome
+      pass
     ];
     sessionVariables = {
       EDITOR = "vim";
@@ -28,7 +29,7 @@
 
       settings = {
         number = true;
-        relativenumber = false;
+        relativenumber = true;
         expandtab = true;
         smartcase = true;
       };
@@ -39,6 +40,9 @@
       enable = true;
       userName = "alex-ashery";
       userEmail = "alexander.ashery@gmail.com";
+      extraConfig = {
+        credential.helper = "!pass git/alex-ashery";
+        };
     };
     kitty = {
       enable = true;
@@ -74,6 +78,9 @@
           "<" = "tab-move -";
           ">" = "tab-move +";
         };
+      };
+      searchEngines = {
+        g = "https://www.google.com/search?hl=en&q={}";
       };
       settings = {
         content.blocking.enabled = true;
