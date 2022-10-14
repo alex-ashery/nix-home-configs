@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
 {
+  fonts.fontconfig.enable = true;
   home = {
     username = "aashery";
     homeDirectory = "/home/aashery";
@@ -12,6 +13,9 @@
       awesome
       pass
       spotify-tui
+      joplin
+      joplin-desktop
+      (pkgs.nerdfonts.override { fonts = [ "Meslo" ]; })
     ];
     sessionVariables = {
       EDITOR = "vim";
@@ -20,6 +24,7 @@
 
   programs = {
     home-manager.enable = true;
+    obs-studio.enable = true;
     vim = {
       enable = true;
       plugins = with pkgs.vimPlugins; [
@@ -55,6 +60,9 @@
         "ctrl+<" = "move_tab_backward";
         "ctrl+>" = "move_tab_foreward";
       };
+      settings = {
+        shell = "zsh";
+      };
     };
     qutebrowser = {
       enable = true;
@@ -64,6 +72,7 @@
           gh = "https://www.github.com";
           az = "https://www.amazon.com";
           ud = "https://www.udemy.com";
+          hmm = "https://rycee.gitlab.io/home-manager/options.html";
       };
       keyBindings = {
         normal = {
@@ -91,12 +100,39 @@
       };
     };
     brave.enable = true;
+    zsh = {
+      enable = true;
+      enableCompletion = true;
+      plugins = [
+        {
+          name = "powerlevel10k";
+          src = pkgs.zsh-powerlevel10k;
+          file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+        }
+      ];
+      initExtra = ''
+        # Make Vi mode transitions faster (KEYTIMEOUT is in hundreths of a second)
+        export KEYTIMEOUT=1
+        bindkey -v
+        source .zsh/p10k.zsh
+      '';
+      oh-my-zsh = {
+        enable = true;
+        plugins = [ "git" "python" "aws" "colored-man-pages" "jira" "terraform" "kubectl" "fzf" ];
+      };
+      shellAliases = {
+        hmsf = "f() { home-manager switch --flake .#$1 };f";
+      };
+    };
+    fzf.enable = true;
   };
 
   home.file = {
     ".hm-xsession".source = ./hm-xsession;
     ".awesome".source = ./awesome;
     ".awesome".recursive = true;
+    ".zsh".source = ./zsh;
+    ".zsh".recursive = true;
   };
 
   services.spotifyd = {
