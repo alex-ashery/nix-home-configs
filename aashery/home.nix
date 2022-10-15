@@ -16,6 +16,7 @@
       joplin
       joplin-desktop
       (pkgs.nerdfonts.override { fonts = [ "Meslo" ]; })
+      acpi
     ];
     sessionVariables = {
       EDITOR = "vim";
@@ -62,6 +63,7 @@
       };
       settings = {
         shell = "zsh";
+        enable_audio_bell = "no";
       };
     };
     qutebrowser = {
@@ -122,6 +124,7 @@
       };
       shellAliases = {
         hmsf = "f() { home-manager switch --flake .#$1 };f";
+        nrsf = "f() { sudo nixos-rebuild switch --flake .#$1 };f";
       };
     };
     fzf.enable = true;
@@ -129,8 +132,10 @@
 
   home.file = {
     ".hm-xsession".source = ./hm-xsession;
-    ".awesome".source = ./awesome;
-    ".awesome".recursive = true;
+    ".config/awesome" = {
+      source = ./awesome;
+      recursive = true;
+    };
     ".zsh".source = ./zsh;
     ".zsh".recursive = true;
   };

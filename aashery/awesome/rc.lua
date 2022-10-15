@@ -17,6 +17,9 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
+local volume_widget = require('volume-widget.volume')
+local battery_widget = require('battery-widget.battery')
+local brightness_widget = require("brightness-widget.brightness")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -211,7 +214,9 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            mykeyboardlayout,
+            brightness_widget{type="arc", path_to_icon="/home/aashery/.config/awesome/brightness-widget/"},
+            volume_widget{device="pipewire", widget_type="arc"},
+            battery_widget{path_to_icons="/home/aashery/.config/awesome/battery-widget/"},
             wibox.widget.systray(),
             mytextclock,
             s.mylayoutbox,
@@ -327,7 +332,16 @@ globalkeys = gears.table.join(
               {description = "lua execute prompt", group = "awesome"}),
     -- Menubar
     awful.key({ modkey }, "p", function() menubar.show() end,
-              {description = "show the menubar", group = "launcher"})
+              {description = "show the menubar", group = "launcher"}),
+    -- Media Keys
+    -- awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("mpc toggle") end),
+    -- awful.key({ }, "XF86AudioNext", function () awful.util.spawn("mpc next") end),
+    -- awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("mpc prev") end),
+    awful.key({ }, "XF86AudioRaiseVolume", function () volume_widget:inc(5) end),
+    awful.key({ }, "XF86AudioLowerVolume", function () volume_widget:dec(5) end),
+    awful.key({ }, "XF86AudioMute", function () volume_widget:toggle() end),
+    awful.key({ }, "XF86MonBrightnessUp", function () brightness_widget:inc() end),
+    awful.key({ }, "XF86MonBrightnessDown", function () brightness_widget:dec() end)
 )
 
 clientkeys = gears.table.join(
