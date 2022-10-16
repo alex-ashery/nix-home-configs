@@ -20,6 +20,7 @@ require("awful.hotkeys_popup.keys")
 local volume_widget = require('volume-widget.volume')
 local battery_widget = require('battery-widget.battery')
 local brightness_widget = require("brightness-widget.brightness")
+local logout_popup = require("logout-popup-widget.logout-popup")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -50,7 +51,6 @@ end
 -- Themes define colours, icons, font and wallpapers.
 -- beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 beautiful.init(gears.filesystem.get_themes_dir() .. "gtk/theme.lua")
-
 -- This is used later as the default terminal and editor to run.
 terminal = "kitty"
 editor = os.getenv("EDITOR") or "nano"
@@ -214,12 +214,13 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            brightness_widget{type="arc", path_to_icon="/home/aashery/.config/awesome/brightness-widget/"},
+            brightness_widget{type="arc", path_to_icon="/home/aashery/.config/awesome/brightness-widget/brightness.svg"},
             volume_widget{device="pipewire", widget_type="arc"},
             battery_widget{path_to_icons="/home/aashery/.config/awesome/battery-widget/"},
             wibox.widget.systray(),
             mytextclock,
             s.mylayoutbox,
+            logout_popup.widget{icon="/home/aashery/.config/awesome/logout-popup-widget/power.svg", text_color="",onlock=function() awful.spawn.with_shell("betterlockscreen -l --off 10") end},
         },
     }
 end)
@@ -341,7 +342,9 @@ globalkeys = gears.table.join(
     awful.key({ }, "XF86AudioLowerVolume", function () volume_widget:dec(5) end),
     awful.key({ }, "XF86AudioMute", function () volume_widget:toggle() end),
     awful.key({ }, "XF86MonBrightnessUp", function () brightness_widget:inc() end),
-    awful.key({ }, "XF86MonBrightnessDown", function () brightness_widget:dec() end)
+    awful.key({ }, "XF86MonBrightnessDown", function () brightness_widget:dec() end),
+    -- Widgets?
+    awful.key({ modkey, "Shift" }, "l", function() logout_popup.launch() end, {description = "Show logout screen", group = "custom"})
 )
 
 clientkeys = gears.table.join(

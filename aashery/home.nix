@@ -128,6 +128,7 @@
       };
     };
     fzf.enable = true;
+    feh.enable = true;
   };
 
   home.file = {
@@ -149,5 +150,25 @@
         backend = "pulseaudio";
       };
     };
+  };
+  services.betterlockscreen = {
+    enable = true;
+    arguments = [ "--off" "10" ];
+  };
+  services.xidlehook = {
+    enable = true;
+    not-when-audio = true;
+    timers = [
+      {
+        delay = 120;
+        command = "/run/current-system/sw/bin/light -G > $HOME/.cache/pre_idle_brightness;/run/current-system/sw/bin/light -S 20";
+        canceller = "if [ -f $HOME/.cache/pre_idle_brightness ]; then /run/current-system/sw/bin/light -S $(<$HOME/.cache/pre_idle_brightness);fi";
+      }
+      {
+        delay = 10;
+        command = "/home/aashery/.nix-profile/bin/betterlockscreen -l --off 10";
+        canceller = "if [ -f $HOME/.cache/pre_idle_brightness ]; then /run/current-system/sw/bin/light -S $(<$HOME/.cache/pre_idle_brightness);fi";
+      }
+    ];
   };
 }

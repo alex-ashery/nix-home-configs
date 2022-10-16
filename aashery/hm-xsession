@@ -1,3 +1,6 @@
 #!/bin/sh
 
-exec env EDITOR=vim awesome -c ~/.config/awesome/rc.lua
+_MY_AWESOME_PATH=$HOME/.config/awesome
+_AWESOME_THEMES_PATH=$_MY_AWESOME_PATH/themes
+_AWESOME_RC=$_MY_AWESOME_PATH/rc.lua
+exec env EDITOR=vim AWESOME_THEMES_PATH=$_AWESOME_THEMES_PATH awesome -c $_AWESOME_RC
