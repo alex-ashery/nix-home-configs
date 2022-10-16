@@ -139,36 +139,46 @@
     };
     ".zsh".source = ./zsh;
     ".zsh".recursive = true;
+    ".local/share/applications/mimeapps.list".source = ./mime/mimeapps.list;
+    ".local/share/applications/qutebrowser.desktop".source = ./mime/qutebrowser.desktop;
   };
 
-  services.spotifyd = {
-    enable = true;
-    settings = {
-      spotifyd = {
-        username = "zyxama@gmail.com";
-        password_cmd = "/home/aashery/.nix-profile/bin/pass spotify";
-        backend = "pulseaudio";
+  services = {
+    spotifyd = {
+      enable = true;
+      settings = {
+        spotifyd = {
+          username = "zyxama@gmail.com";
+          password_cmd = "/home/aashery/.nix-profile/bin/pass spotify";
+          backend = "pulseaudio";
+        };
       };
     };
-  };
-  services.betterlockscreen = {
-    enable = true;
-    arguments = [ "--off" "10" ];
-  };
-  services.xidlehook = {
-    enable = true;
-    not-when-audio = true;
-    timers = [
-      {
-        delay = 120;
-        command = "/run/current-system/sw/bin/light -G > $HOME/.cache/pre_idle_brightness;/run/current-system/sw/bin/light -S 20";
-        canceller = "if [ -f $HOME/.cache/pre_idle_brightness ]; then /run/current-system/sw/bin/light -S $(<$HOME/.cache/pre_idle_brightness);fi";
-      }
-      {
-        delay = 10;
-        command = "/home/aashery/.nix-profile/bin/betterlockscreen -l --off 10";
-        canceller = "if [ -f $HOME/.cache/pre_idle_brightness ]; then /run/current-system/sw/bin/light -S $(<$HOME/.cache/pre_idle_brightness);fi";
-      }
-    ];
+    betterlockscreen = {
+      enable = true;
+      arguments = [ "--off" "10" ];
+    };
+    xidlehook = {
+      enable = true;
+      not-when-audio = true;
+      timers = [
+        {
+          delay = 120;
+          command = "/run/current-system/sw/bin/light -G > $HOME/.cache/pre_idle_brightness;/run/current-system/sw/bin/light -S 20";
+          canceller = "if [ -f $HOME/.cache/pre_idle_brightness ]; then /run/current-system/sw/bin/light -S $(<$HOME/.cache/pre_idle_brightness);fi";
+        }
+        {
+          delay = 10;
+          command = "/home/aashery/.nix-profile/bin/betterlockscreen -l --off 10";
+          canceller = "if [ -f $HOME/.cache/pre_idle_brightness ]; then /run/current-system/sw/bin/light -S $(<$HOME/.cache/pre_idle_brightness);fi";
+        }
+      ];
+    };
+    redshift = {
+      enable = true;
+      # TODO: automatic identification may be broken for a bit due to this issue https://discourse.nixos.org/t/redshift-with-geoclue2/13820
+      latitude = 47.6;
+      longitude = -122.3;
+    };
   };
 }
