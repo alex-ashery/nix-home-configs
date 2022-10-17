@@ -216,7 +216,7 @@ awful.screen.connect_for_each_screen(function(s)
             layout = wibox.layout.fixed.horizontal,
             brightness_widget{type="arc", path_to_icon="/home/aashery/.config/awesome/brightness-widget/brightness.svg"},
             volume_widget{device="pipewire", widget_type="arc"},
-            battery_widget{path_to_icons="/home/aashery/.config/awesome/battery-widget/"},
+            battery_widget{path_to_icons="/home/aashery/.config/awesome/battery-widget/", display_notification=true, display_notification_on_click=false},
             wibox.widget.systray(),
             mytextclock,
             s.mylayoutbox,

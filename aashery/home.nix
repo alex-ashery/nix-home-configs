@@ -98,7 +98,7 @@
         content.blocking.enabled = true;
         fonts.default_size = "15pt";
         scrolling.smooth = true;
-        colors.webpage.darkmode.enabled = true;
+        content.pdfjs = true;
       };
     };
     brave.enable = true;

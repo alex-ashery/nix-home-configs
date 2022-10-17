@@ -12,7 +12,7 @@ local awful = require("awful")
 local naughty = require("naughty")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
-local gfs = require("gears.filesystem")
+local gears = require("gears")
 local dpi = require('beautiful').xresources.apply_dpi
 
 -- acpi sample outputs
@@ -37,7 +37,7 @@ local function worker(user_args)
     local position = args.notification_position or "top_right"
     local timeout = args.timeout or 10
 
-    local warning_msg_title = args.warning_msg_title or 'Huston, we have a problem'
+    local warning_msg_title = args.warning_msg_title or 'Houston, we have a problem'
     local warning_msg_text = args.warning_msg_text or 'Battery is dying'
     local warning_msg_position = args.warning_msg_position or 'bottom_right'
     -- local warning_msg_icon = args.warning_msg_icon or WIDGET_DIR .. '/spaceman.jpg'
@@ -46,7 +46,7 @@ local function worker(user_args)
         enable_battery_warning = true
     end
 
-    if not gfs.dir_readable(path_to_icons) then
+    if not gears.filesystem.dir_readable(path_to_icons) then
         naughty.notify{
             title = "Battery Widget",
             text = "Folder with icons doesn't exist: " .. path_to_icons,
@@ -119,6 +119,7 @@ local function worker(user_args)
     end
     local last_battery_check = os.time()
     local batteryType = "battery-good-symbolic"
+    local batteryColor = ""
 
     watch("acpi -i", timeout,
     function(widget, stdout)
@@ -165,10 +166,19 @@ local function worker(user_args)
 
                 show_battery_warning()
             end
-        elseif (charge >= 15 and charge < 40) then batteryType = "battery-caution%s-symbolic"
-        elseif (charge >= 40 and charge < 60) then batteryType = "battery-low%s-symbolic"
-        elseif (charge >= 60 and charge < 80) then batteryType = "battery-good%s-symbolic"
-        elseif (charge >= 80 and charge <= 100) then batteryType = "battery-full%s-symbolic"
+            batteryColor = "#ff0000"
+        elseif (charge >= 15 and charge < 40) then
+            batteryType = "battery-caution%s-symbolic"
+            batteryColor = "#ffa500"
+        elseif (charge >= 40 and charge < 60) then
+            batteryType = "battery-low%s-symbolic"
+            batteryColor = "#ffff00"
+        elseif (charge >= 60 and charge < 80) then
+            batteryType = "battery-good%s-symbolic"
+            batteryColor = "#9acd32"
+        elseif (charge >= 80 and charge <= 100) then
+            batteryType = "battery-full%s-symbolic"
+            batteryColor = "#00ff00"
         end
 
         if status == 'Charging' then
@@ -177,7 +187,11 @@ local function worker(user_args)
             batteryType = string.format(batteryType, '')
         end
 
-        widget.icon:set_image(path_to_icons .. batteryType .. ".svg")
+        local batteryIcon = gears.surface.load_uncached(path_to_icons .. batteryType .. ".svg")
+        local batteryIconColored = gears.color.recolor_image(batteryIcon, batteryColor)
+        widget.icon:set_image(batteryIconColored)
+
+
 
         -- Update popup text
         -- battery_popup.text = string.gsub(stdout, "\n$", "")
