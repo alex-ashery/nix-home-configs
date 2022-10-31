@@ -3,4 +3,4 @@
 _MY_AWESOME_PATH=$HOME/.config/awesome
 _AWESOME_THEMES_PATH=$_MY_AWESOME_PATH/themes
 _AWESOME_RC=$_MY_AWESOME_PATH/rc.lua
-exec env EDITOR=vim AWESOME_THEMES_PATH=$_AWESOME_THEMES_PATH awesome -c $_AWESOME_RC
+exec env EDITOR=vim AWESOME_THEMES_PATH=$_AWESOME_THEMES_PATH awesome AWESOME_LUA_LIB_PATH=$HOME/.nix-profile/share/awesome/lib -c $_AWESOME_RC --search $HOME/.nix-profile/share/awesome/lib >> ~/.cache/awesome/stdout 2>> ~/.cache/awesome/stderr

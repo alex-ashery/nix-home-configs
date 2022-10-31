@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "bling": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1658565404,
+        "narHash": "sha256-sUUMgdAmXAB/2ocwoo2OTZlWRbSRLdKi1oZB20qRNWU=",
+        "owner": "BlingCorp",
+        "repo": "bling",
+        "rev": "70c894e58bb88dea55e9799ad373fdaea309da9e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "BlingCorp",
+        "repo": "bling",
+        "type": "github"
+      }
+    },
     "homeManager": {
       "inputs": {
         "nixpkgs": [
@@ -39,8 +55,26 @@
     },
     "root": {
       "inputs": {
+        "bling": "bling",
         "homeManager": "homeManager",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "rubato": "rubato"
+      }
+    },
+    "rubato": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1663099947,
+        "narHash": "sha256-vUGyS2dYM06x2365eAabC34XRJd+MINKr53HTvIgSQ4=",
+        "owner": "andOrlando",
+        "repo": "rubato",
+        "rev": "41583caa1aeaec8ef56dfc134531ff3eb23af057",
+        "type": "github"
+      },
+      "original": {
+        "owner": "andOrlando",
+        "repo": "rubato",
+        "type": "github"
       }
     }
   },

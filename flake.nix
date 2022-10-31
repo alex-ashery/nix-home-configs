@@ -7,16 +7,25 @@
       url = "github:nix-community/home-manager/release-22.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # awesomewm modules
+    bling = { url = "github:BlingCorp/bling"; flake = false; };
+    rubato = { url = "github:andOrlando/rubato"; flake = false; };
   };
 
-  outputs = { self, nixpkgs, homeManager }:
+  outputs = { self, nixpkgs, homeManager, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      extraSpecialArgs = {
+        inherit inputs self;
+        bling = inputs.bling;
+        rubato = inputs.rubato;
+      };
     in {
       homeConfigurations = {
         "aashery" = homeManager.lib.homeManagerConfiguration {
-          inherit pkgs system;
+          inherit pkgs system extraSpecialArgs;
           configuration.imports = [ ./aashery/home.nix ];
           homeDirectory = "/home/aashery";
           username = "aashery";

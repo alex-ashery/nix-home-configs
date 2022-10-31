@@ -1,5 +1,15 @@
-{ config, pkgs, ... }:
+{ inputs, config, pkgs, ... }:
 
+let
+    awesome_custom = pkgs.awesome.overrideAttrs (old: {
+      src = pkgs.fetchFromGitHub {
+        owner = "awesomeWM";
+        repo = "awesome";
+        rev = "392dbc2";
+        sha256 = "sha256:093zapjm1z33sr7rp895kplw91qb8lq74qwc0x1ljz28xfsbp496";
+      };
+    });
+in
 {
   fonts.fontconfig.enable = true;
   home = {
@@ -10,19 +20,28 @@
       libnotify
       vlc
       pavucontrol
-      awesome
+      awesome_custom
       pass
       spotify-tui
       joplin
       joplin-desktop
       (pkgs.nerdfonts.override { fonts = [ "Meslo" ]; })
       acpi
+      playerctl
+      lua5_2
+      picom
+      rofi
+      brightnessctl
     ];
     sessionVariables = {
       EDITOR = "vim";
     };
   };
-
+  
+#  windowManager.awesome = {
+#    enable = true;
+#    package = awesome_custom;
+#  };
   programs = {
     home-manager.enable = true;
     obs-studio.enable = true;
@@ -141,7 +160,9 @@
     ".zsh".recursive = true;
     ".local/share/applications/mimeapps.list".source = ./mime/mimeapps.list;
     ".local/share/applications/qutebrowser.desktop".source = ./mime/qutebrowser.desktop;
-  };
+    ".config/awesome/modules/bling".source = inputs.bling.outPath;
+    ".config/awesome/modules/rubato".source = inputs.rubato.outPath;
+ };
 
   services = {
     spotifyd = {
