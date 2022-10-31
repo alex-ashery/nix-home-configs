@@ -83,6 +83,7 @@ in
       settings = {
         shell = "zsh";
         enable_audio_bell = "no";
+        font_size = "15.0";
       };
     };
     qutebrowser = {
