@@ -13,3 +13,29 @@ set incsearch
 filetype plugin on
 syntax on
 set shellcmdflag=-ic
+
+" fzf config
+" Prefix all fzf.vim exported commands with "Fzf"
+let g:fzf_command_prefix = 'Fzf'
+
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+
+" Preview window options
+let g:fzf_preview_window = ['right:50%:wrap']
+
+" File path completion in Insert mode using Fzf
+" Enhance native <C-x> insert mode completion
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-l> <plug>(fzf-complete-buffer-line)
+
+" Mappings
+nnoremap <silent> <leader>o :FzfFiles<CR>
+nnoremap <silent> <leader>O :FzfFiles /<CR>
+nnoremap <silent> <leader>b :FzfBuffers<CR>
+nnoremap <silent> <leader>r :FzfRg<CR>
+
+" netrw
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3

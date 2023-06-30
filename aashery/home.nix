@@ -32,6 +32,14 @@ in
       picom
       rofi
       brightnessctl
+      minikube
+      kubectl
+      k9s
+      unzip
+      yq
+      kind
+      ripgrep
+      # discord
     ];
     sessionVariables = {
       EDITOR = "vim";
@@ -51,6 +59,8 @@ in
         vim-airline
         vim-fugitive
         vim-surround
+        vim-nix
+        fzf-vim
       ];
 
       settings = {
@@ -121,7 +131,6 @@ in
         content.pdfjs = true;
       };
     };
-    brave.enable = true;
     zsh = {
       enable = true;
       enableCompletion = true;
@@ -149,6 +158,20 @@ in
     };
     fzf.enable = true;
     feh.enable = true;
+    bat.enable = true;
+    chromium = {
+      enable = true;
+      package = pkgs.brave;
+      extensions = [
+        { id = "dbepggeogbaibhgnhhndojpepiihcmeb"; }
+      ];
+    };
+    zathura = {
+      enable = true;
+      extraConfig = ''
+        set selection-clipboard clipboard
+      '';
+    };
   };
 
   home.file = {
@@ -185,7 +208,7 @@ in
       not-when-audio = true;
       timers = [
         {
-          delay = 120;
+          delay = 1200;
           command = "/run/current-system/sw/bin/light -G > $HOME/.cache/pre_idle_brightness;/run/current-system/sw/bin/light -S 20";
           canceller = "if [ -f $HOME/.cache/pre_idle_brightness ]; then /run/current-system/sw/bin/light -S $(<$HOME/.cache/pre_idle_brightness);fi";
         }
