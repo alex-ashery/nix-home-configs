@@ -193,6 +193,7 @@ in
     ".local/share/applications/qutebrowser.desktop".source = ./mime/qutebrowser.desktop;
     ".config/awesome/modules/bling".source = inputs.bling.outPath;
     ".config/awesome/modules/rubato".source = inputs.rubato.outPath;
+    ".config/rofi/launch.sh".source = ./rofi_launch.sh;
  };
 
   services = {
