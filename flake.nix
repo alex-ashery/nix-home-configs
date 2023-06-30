@@ -23,6 +23,7 @@
         rubato = inputs.rubato;
       };
     in {
+      pkgs.config.allowUnfree = true;
       homeConfigurations = {
         "aashery" = homeManager.lib.homeManagerConfiguration {
           inherit pkgs system extraSpecialArgs;

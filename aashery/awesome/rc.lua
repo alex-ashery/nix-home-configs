@@ -1,30 +1,47 @@
-require "awful.autofocus"
-local naughty = require "naughty"
+local awful = require("awful")
+local beautiful = require("beautiful")
+local gears = require("gears")
 
-naughty.connect_signal("request::display_error", function(message, startup)
-  naughty.notification {
-    urgency = "critical",
-    title = "Oops, an error happened" .. (startup and " during startup!" or "!"),
-    message = message,
-  }
+require("config.errorhandling")
+
+beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
+
+-- window decorations (titlebars)
+require("decorations")
+
+-- init configs
+require("config.wallpaper")
+require("config.layout")
+require("config.rules")
+require("config.tags")
+require("config.keys")
+
+
+-- init daemons
+require("evil")
+
+-- init widgets
+require("widgets.topbar")
+require("widgets.popup")
+require("widgets.notifications")
+
+require("awful.autofocus")
+
+
+-- {{{ Signals
+-- Signal function to execute when a new client appears.
+client.connect_signal("manage", function (c)
+    -- Set the windows at the slave,
+    -- i.e. put it at the end of others instead of setting it master.
+    -- if not awesome.startup then awful.client.setslave(c) end
+
+    if awesome.startup
+      and not c.size_hints.user_position
+      and not c.size_hints.program_position then
+        -- Prevent clients from being unreachable after screen count changes.
+        awful.placement.no_offscreen(c)
+    end
 end)
 
-_G.theme = "material"
-
-require("beautiful").init("/home/aashery/.config/awesome/themes/forest/theme.lua")
-
-F = {}
-
-require "squeals"
-require "conf"
-
-require "ui.action"
-require "ui.bar"
-require "ui.notifs"
-require "ui.prompt.exec"
-require "ui.prompt.run"
-require "ui.start"
-require "ui.titlebar"
-require "ui.utilities.exit"
-require "ui.utilities.scr"
--- require "ui.utilities.theme_switch"
+-- autorun programs
+awful.spawn.with_shell("~/.config/awesome/config/autorun.sh")

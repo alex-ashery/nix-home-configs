@@ -9,6 +9,12 @@ let
         sha256 = "sha256:093zapjm1z33sr7rp895kplw91qb8lq74qwc0x1ljz28xfsbp496";
       };
     });
+    pulseaudio_custom = pkgs.pulseaudio.overrideAttrs (old: {
+      src = pkgs.fetchurl {
+        url = http://freedesktop.org/software/pulseaudio/releases/pulseaudio-16.1.tar.xz;
+        sha256 = "sha256-ju8yzpHUeXn5X9mpNec4zX63RjQw2rxyhjJRdR5QSuQ=";
+      };
+    });
 in
 {
   fonts.fontconfig.enable = true;
@@ -39,7 +45,7 @@ in
       yq
       kind
       ripgrep
-      # discord
+      pulseaudio_custom
     ];
     sessionVariables = {
       EDITOR = "vim";
@@ -131,6 +137,13 @@ in
         content.pdfjs = true;
       };
     };
+    brave = {
+      enable = true;
+      extensions = [
+        "dbepggeogbaibhgnhhndojpepiihcmeb" # vimium
+        "hdokiejnpimakedhajhdlcegeplioahd" # lastpass
+      ];
+    };
     zsh = {
       enable = true;
       enableCompletion = true;
@@ -159,19 +172,13 @@ in
     fzf.enable = true;
     feh.enable = true;
     bat.enable = true;
-    chromium = {
-      enable = true;
-      package = pkgs.brave;
-      extensions = [
-        { id = "dbepggeogbaibhgnhhndojpepiihcmeb"; }
-      ];
-    };
     zathura = {
       enable = true;
       extraConfig = ''
         set selection-clipboard clipboard
       '';
     };
+    jq.enable = true;
   };
 
   home.file = {
