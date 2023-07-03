@@ -1,0 +1,35 @@
+# windows
+# --focus
+super + {h,j,k,l,m,p,c}
+        i3-msg focus {left,down,up,right,mode_toggle,parent,child}
+# --move
+super + shift + {h,j,k,l}
+        i3-msg move {left,down,up,right}
+# --kill
+super + shift + x
+        i3-msg kill
+# --toggle fullscreen/floating
+super + {m,f}
+        i3-msg {fullscreen,floating} toggle
+
+# alt - workspaces/session
+# --cycle/create workspace
+super + alt + {j, k, t}
+        i3-msg workspace {prev, next, $($ROFI_SCRIPTS/name.sh 'Create workspace')}
+# --rename workspace
+super + alt + n
+        i3-msg rename workspace to $($ROFI_SCRIPTS/name.sh 'Rename workspace')
+# --reload wm
+super + alt + {r,c}
+        i3-msg {reload,restart}
+# --session
+super + alt + p
+        $ROFI_SCRIPTS/session.sh
+
+# applications
+# --launcher
+super + o
+        $ROFI_SCRIPTS/launch.sh
+# --terminal
+super + t
+        kitty

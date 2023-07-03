@@ -1,0 +1,7 @@
+@import "simple.rasi"
+
+* {
+    windowHeight: 5%;
+    windowWidth: 15%;
+    inputPlaceholder: "name";
+}

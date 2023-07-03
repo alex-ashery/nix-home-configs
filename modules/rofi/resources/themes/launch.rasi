@@ -1,0 +1,7 @@
+@import "simple.rasi"
+
+* {
+    windowHeight: 46%;
+    windowWidth: 25%;
+    inputPlaceholder: "Search";
+}
