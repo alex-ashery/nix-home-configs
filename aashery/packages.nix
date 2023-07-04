@@ -13,12 +13,12 @@ with pkgs; [
     pavucontrol
     joplin
     joplin-desktop
-    (pkgs.nerdfonts.override { fonts = [ "Meslo" ]; })
+    (nerdfonts.override { fonts = [ "Meslo" ]; })
     acpi
     lua5_2
     brightnessctl
     kubectl
-    unstable.k9s
+    k9s
     unzip
     yq
     kind

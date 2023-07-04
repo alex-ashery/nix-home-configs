@@ -1,4 +1,4 @@
-{ inputs, config, pkgs, ... }:
+{ inputs, outputs, lib, config, pkgs, ... }:
 
 let
     uname = "aashery";
@@ -8,11 +8,16 @@ in
 
   imports = import ./modules.nix;
 
+  nixpkgs.overlays = [
+    outputs.overlays.unstable-packages
+  ];
+
   home = {
     username = uname;
     homeDirectory = "/home/${uname}";
     packages = import ./packages.nix pkgs;
     sessionVariables.EDITOR = "vim";
+    stateVersion = "20.09";
   };
 
   xsession = {

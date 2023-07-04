@@ -1,54 +1,54 @@
 {
   "nodes": {
-    "bling": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1658565404,
-        "narHash": "sha256-sUUMgdAmXAB/2ocwoo2OTZlWRbSRLdKi1oZB20qRNWU=",
-        "owner": "BlingCorp",
-        "repo": "bling",
-        "rev": "70c894e58bb88dea55e9799ad373fdaea309da9e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "BlingCorp",
-        "repo": "bling",
-        "type": "github"
-      }
-    },
-    "homeManager": {
+    "home-manager": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1665475263,
-        "narHash": "sha256-T4at7d+KsQNWh5rfjvOtQCaIMWjSDlSgQZKvxb+LcEY=",
+        "lastModified": 1687871164,
+        "narHash": "sha256-bBFlPthuYX322xOlpJvkjUBz0C+MOBjZdDOOJJ+G2jU=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "17208be516fc36e2ab0ceb064d931e90eb88b2a3",
+        "rev": "07c347bb50994691d7b0095f45ebd8838cf6bc38",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
-        "ref": "release-22.05",
+        "ref": "release-23.05",
         "repo": "home-manager",
         "type": "github"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1665401932,
-        "narHash": "sha256-mgLxYh21/0h7S/QS8U/QS+zLwlSRiiFOfPkOxLZnPgk=",
+        "lastModified": 1688389917,
+        "narHash": "sha256-RKiK1QeommEsjQ8fLgxt4831x9O6n2gD7wAhVZTrr8M=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e179d1e57ad07f1294dcc29ad5283b214a6ae21e",
+        "rev": "aed4b19d312525ae7ca9bceb4e1efe3357d0e2eb",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-22.05",
+        "ref": "nixos-23.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-new": {
+      "locked": {
+        "lastModified": 1688389917,
+        "narHash": "sha256-RKiK1QeommEsjQ8fLgxt4831x9O6n2gD7wAhVZTrr8M=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "aed4b19d312525ae7ca9bceb4e1efe3357d0e2eb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-23.05",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -71,27 +71,10 @@
     },
     "root": {
       "inputs": {
-        "bling": "bling",
-        "homeManager": "homeManager",
+        "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-unstable": "nixpkgs-unstable",
-        "rubato": "rubato"
-      }
-    },
-    "rubato": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1663099947,
-        "narHash": "sha256-vUGyS2dYM06x2365eAabC34XRJd+MINKr53HTvIgSQ4=",
-        "owner": "andOrlando",
-        "repo": "rubato",
-        "rev": "41583caa1aeaec8ef56dfc134531ff3eb23af057",
-        "type": "github"
-      },
-      "original": {
-        "owner": "andOrlando",
-        "repo": "rubato",
-        "type": "github"
+        "nixpkgs-new": "nixpkgs-new",
+        "nixpkgs-unstable": "nixpkgs-unstable"
       }
     }
   },
