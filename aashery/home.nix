@@ -5,12 +5,8 @@ let
 in
 {
   fonts.fontconfig.enable = true;
-
   imports = import ./modules.nix;
-
-  nixpkgs.overlays = [
-    outputs.overlays.unstable-packages
-  ];
+  nixpkgs.overlays = [ outputs.overlays.unstable-packages ];
 
   home = {
     username = uname;
@@ -25,22 +21,22 @@ in
     # place a script in the path expected by NixOS for starting the session
     scriptPath = ".hm-xsession";
   };
+
   # For each program in the list, generate an attributeSet for it enabling the program
   programs = pkgs.lib.genAttrs (import ./programs.nix) (
     program: {enable = true;}
   );
 
+  # services with a config too simplistic to modularize
   services = {
     picom.enable = true;
     betterlockscreen = {
       enable = true;
       arguments = [ "--off" "10" ];
     };
-    redshift = {
+    gammastep = {
       enable = true;
-      # TODO: automatic identification may be broken for a bit due to this issue https://discourse.nixos.org/t/redshift-with-geoclue2/13820
-      latitude = 47.6;
-      longitude = -122.3;
+      provider = "geoclue2";
     };
   };
 }
