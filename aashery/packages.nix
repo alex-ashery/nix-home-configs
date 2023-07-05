@@ -16,7 +16,6 @@ with pkgs; [
     (nerdfonts.override { fonts = [ "Meslo" ]; })
     acpi
     lua5_2
-    brightnessctl
     kubectl
     k9s
     unzip
@@ -25,4 +24,7 @@ with pkgs; [
     ripgrep
     pulseaudio_custom
     calcurse
+    # TODO: for now these are installed together but should probably be packaged
+    ddcutil
+    (pkgs.buildEnv { name = "bright"; paths = [ ./. ]; })
 ]

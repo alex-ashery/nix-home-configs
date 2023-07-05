@@ -1,0 +1,2 @@
+#!/bin/sh
+ddcutil getvcp 10 | grep -o 'current value =[[:space:]]*[[:digit:]]*' | grep -o '[[:digit:]]*' | tr -d '\n'
