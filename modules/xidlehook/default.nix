@@ -13,7 +13,7 @@
       # }
       {
         delay = 1200;
-        command = "${config.home.homeDirectory}/.nix-profile/bin/betterlockscreen -l --off 10";
+        command = "${config.home.homeDirectory}/.nix-profile/bin/betterlockscreen -l";
         # canceller = cancellerCommand;
       }
     ];

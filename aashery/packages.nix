@@ -24,6 +24,10 @@ with pkgs; [
     ripgrep
     pulseaudio_custom
     calcurse
+    # spectacle
+    betterlockscreen
+    timg
+    nsxiv
     # TODO: for now these are installed together but should probably be packaged
     ddcutil
     (pkgs.buildEnv { name = "bright"; paths = [ ./. ]; })

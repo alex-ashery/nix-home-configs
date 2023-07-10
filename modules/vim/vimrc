@@ -14,6 +14,10 @@ filetype plugin on
 syntax on
 set shellcmdflag=-ic
 
+" leader key
+nnoremap <SPACE> <Nop>
+let mapleader = " "
+
 " fzf config
 " Prefix all fzf.vim exported commands with "Fzf"
 let g:fzf_command_prefix = 'Fzf'
@@ -31,6 +35,9 @@ imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-l> <plug>(fzf-complete-buffer-line)
 
 " Mappings
+nnoremap <silent> <leader>n :bn<CR>
+nnoremap <silent> <leader>p :bp<CR>
+nnoremap <silent> <leader>s :w<CR>
 nnoremap <silent> <leader>o :FzfFiles<CR>
 nnoremap <silent> <leader>O :FzfFiles /<CR>
 nnoremap <silent> <leader>b :FzfBuffers<CR>

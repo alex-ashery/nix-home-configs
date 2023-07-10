@@ -22,14 +22,8 @@ super + alt + n
 # --reload wm
 super + alt + {r,c}
         i3-msg {reload,restart}
-# --session
-super + alt + p
-        $ROFI_SCRIPTS/session.sh
 
 # applications
-# --launcher
-super + o
-        $ROFI_SCRIPTS/launch.sh
 # --terminal
 super + t
         kitty

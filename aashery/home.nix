@@ -30,10 +30,10 @@ in
   # services with a config too simplistic to modularize
   services = {
     picom.enable = true;
-    betterlockscreen = {
-      enable = true;
-      arguments = [ "--off" "10" ];
-    };
+    # betterlockscreen = {
+    #   enable = true;
+    #   arguments = [ "--off" "10" ];
+    # };
     gammastep = {
       enable = true;
       provider = "geoclue2";
