@@ -38,6 +38,12 @@ in
       enable = true;
       provider = "geoclue2";
     };
+    gpg-agent = {
+      enable = true;
+      extraConfig = ''
+        pinentry-program ${pkgs.pinentry-curses}/bin/pinentry
+      '';
+    };
   };
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {

@@ -29,4 +29,5 @@ with pkgs; [
     ddcutil
     (pkgs.buildEnv { name = "bright"; paths = [ ./. ]; })
     docker-compose
+    pinentry-curses
 ]
