@@ -12,4 +12,5 @@
   ../modules/zathura
   ../modules/zsh
   ../modules/rofi_screenshot
+  ../modules/direnv
 ]

@@ -16,11 +16,8 @@ with pkgs; [
     (nerdfonts.override { fonts = [ "Meslo" ]; })
     acpi
     lua5_2
-    kubectl
-    k9s
     unzip
     yq
-    kind
     ripgrep
     pulseaudio_custom
     calcurse
@@ -31,4 +28,5 @@ with pkgs; [
     # TODO: for now these are installed together but should probably be packaged
     ddcutil
     (pkgs.buildEnv { name = "bright"; paths = [ ./. ]; })
+    docker-compose
 ]
