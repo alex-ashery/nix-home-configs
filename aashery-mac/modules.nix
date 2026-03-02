@@ -1,0 +1,8 @@
+[
+  ../modules/git
+  ../modules/kitty
+  ../modules/vim
+  ../modules/zsh
+  ../modules/direnv
+  ../modules/homebrew
+]

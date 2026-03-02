@@ -4,7 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-new.url = "github:NixOS/nixpkgs/nixos-23.05";
     home-manager = {
       url = "github:nix-community/home-manager/release-23.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -14,7 +13,8 @@
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
     let
       inherit (self) outputs;
-      system = "x86_64-linux";
+      linuxSystem = "x86_64-linux";
+      macSystem = "aarch64-darwin";
     in {
       overlays.unstable-packages = final: prev: {
         unstable = import inputs.nixpkgs-unstable {
@@ -23,12 +23,19 @@
       };
       homeConfigurations = {
         "aashery" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = nixpkgs.legacyPackages.${linuxSystem};
           extraSpecialArgs = {
             inherit inputs outputs;
             keyMap = import ./keymap.nix;
           };
           modules = [ ./aashery/home.nix ];
+        };
+        "aashery-mac" = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.${macSystem};
+          extraSpecialArgs = {
+            inherit inputs outputs;
+          };
+          modules = [ ./aashery-mac/home.nix ];
         };
       };
     };

@@ -1,4 +1,12 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
+let
+  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+  brewPrefix =
+    if pkgs.stdenv.hostPlatform.isAarch64
+    then "/opt/homebrew"
+    else "/usr/local";
+  brewBin = "${brewPrefix}/bin/brew";
+in
 {
   config = {
     programs.zsh = {
@@ -16,6 +24,11 @@
         export KEYTIMEOUT=1
         bindkey -v
         source .zsh/p10k.zsh
+      '';
+      profileExtra = lib.mkIf (isDarwin && (config.homebrew.enable or false)) ''
+        if [ -x "${brewBin}" ]; then
+          eval "$("${brewBin}" shellenv)"
+        fi
       '';
       oh-my-zsh = {
         enable = true;
