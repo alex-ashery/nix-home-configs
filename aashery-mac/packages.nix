@@ -4,4 +4,5 @@ with pkgs; [
     yq
     ripgrep
     pkgs.unstable.codex
+    bashInteractive
 ]

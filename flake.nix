@@ -8,13 +8,18 @@
       url = "github:nix-community/home-manager/release-23.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix?ref=7f49111254333bda6881b0dfa8cf7d82fe305f93";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, sops-nix, ... }@inputs:
     let
       inherit (self) outputs;
       linuxSystem = "x86_64-linux";
       macSystem = "aarch64-darwin";
+      forAllSystems = nixpkgs.lib.genAttrs [ linuxSystem macSystem ];
     in {
       overlays.unstable-packages = final: prev: {
         unstable = import inputs.nixpkgs-unstable {
@@ -35,8 +40,27 @@
           extraSpecialArgs = {
             inherit inputs outputs;
           };
-          modules = [ ./aashery-mac/home.nix ];
+          modules = [
+            sops-nix.homeManagerModules.sops
+            ./aashery-mac/home.nix
+          ];
         };
       };
+
+      devShells = forAllSystems (system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in {
+          default = pkgs.mkShell {
+            packages = [
+              pkgs.age
+              pkgs.sops
+            ];
+            SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";
+            shellHook = ''
+              export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
+            '';
+          };
+        });
     };
 }

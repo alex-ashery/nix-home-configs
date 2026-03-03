@@ -1,9 +1,10 @@
 { inputs, outputs, lib, config, pkgs, ... }:
 
 let
-    uname = "aashery";
-in
-{
+  uname = "aashery";
+  sopsTokenFile = ../secrets/github-token.sops.yaml;
+  hasSopsToken = builtins.pathExists sopsTokenFile;
+in {
   fonts.fontconfig.enable = true;
   imports = import ./modules.nix;
   nixpkgs.overlays = [ outputs.overlays.unstable-packages ];
@@ -19,6 +20,9 @@ in
     activation.makeTrampolineApps = lib.hm.dag.entryAfter [ "writeBoundary" ] (
       builtins.readFile ./make-app-trampolines.sh
     );
+    activation.ensureSopsAgeDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      mkdir -p "$HOME/.config/sops/age"
+    '';
   };
 
   # For each program in the list, generate an attributeSet for it enabling the program
@@ -38,5 +42,19 @@ in
     ];
 
     autoBundleOnSwitch = true;
+  };
+
+  nix.enable = true;
+  nix.package = pkgs.nix;
+  nix.extraOptions = lib.optionalString hasSopsToken ''
+    !include ${config.xdg.configHome}/nix/secrets/nix-access-tokens
+  '';
+
+  sops = lib.mkIf hasSopsToken {
+    age.keyFile = "/Users/${uname}/.config/sops/age/keys.txt";
+    secrets."nix-access-tokens" = {
+      sopsFile = sopsTokenFile;
+      path = "${config.xdg.configHome}/nix/secrets/nix-access-tokens";
+    };
   };
 }
