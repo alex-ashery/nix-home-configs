@@ -13,4 +13,5 @@
   ../modules/zsh
   ../modules/rofi_screenshot
   ../modules/direnv
+  ../modules/ssh
 ]

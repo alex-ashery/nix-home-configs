@@ -5,4 +5,5 @@
   ../modules/zsh
   ../modules/direnv
   ../modules/homebrew
+  ../modules/ssh
 ]
