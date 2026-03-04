@@ -12,7 +12,7 @@ in {
   home = {
     username = uname;
     homeDirectory = "/Users/${uname}";
-    packages = import ./packages.nix pkgs;
+    packages = import ./packages.nix { inherit pkgs inputs; };
     sessionVariables.EDITOR = "vim";
     stateVersion = "20.09";
 

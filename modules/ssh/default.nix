@@ -6,11 +6,15 @@ let
 in {
   programs.ssh = {
     enable = true;
-    extraConfig = lib.optionalString isDarwin ''
-      Host *
-        UseKeychain yes
-        AddKeysToAgent yes
-    '';
+    enableDefaultConfig = false;
+    matchBlocks = lib.optionalAttrs isDarwin {
+      "*" = {
+        extraOptions = {
+          UseKeychain = "yes";
+          AddKeysToAgent = "yes";
+        };
+      };
+    };
   };
 
   systemd.user.services = lib.mkIf isLinux {

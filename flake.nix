@@ -2,10 +2,11 @@
   description = "home-manager flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    llm-agents.url = "github:numtide/llm-agents.nix";
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.05";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix = {
@@ -14,7 +15,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, sops-nix, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, sops-nix, llm-agents, ... }@inputs:
     let
       inherit (self) outputs;
       linuxSystem = "x86_64-linux";
@@ -23,7 +24,7 @@
     in {
       overlays.unstable-packages = final: prev: {
         unstable = import inputs.nixpkgs-unstable {
-          system = final.system;
+          system = final.stdenv.hostPlatform.system;
         };
       };
       homeConfigurations = {

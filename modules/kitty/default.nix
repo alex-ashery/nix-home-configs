@@ -1,7 +1,8 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 {
   config.programs.kitty = {
     enable = true;
+    package = pkgs.unstable.kitty;
     keybindings = {
       "ctrl+shift+j" = "previous_tab";
       "ctrl+shift+k" = "next_tab";

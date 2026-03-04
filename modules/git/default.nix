@@ -5,10 +5,12 @@ in
 {
   config.programs.git = {
     enable = true;
-    userName = "alex-ashery";
-    userEmail = "alexander.ashery@gmail.com";
-    extraConfig = lib.mkMerge [
+    settings = lib.mkMerge [
       {
+        user = {
+          name = "alex-ashery";
+          email = "alexander.ashery@gmail.com";
+        };
         pager = {
           branch = "false";
           diff = "false";
