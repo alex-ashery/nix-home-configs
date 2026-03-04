@@ -12,7 +12,7 @@ set incsearch
 
 filetype plugin on
 syntax on
-set shellcmdflag=-ic
+set shellcmdflag=-c
 
 " leader key
 nnoremap <SPACE> <Nop>
