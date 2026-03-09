@@ -24,6 +24,16 @@ in
         export KEYTIMEOUT=1
         bindkey -v
         source .zsh/p10k.zsh
+      '' + lib.optionalString isDarwin ''
+        # Make `ls` colors work whether `ls` resolves to GNU or BSD tools.
+        unalias ls 2>/dev/null || true
+        ls() {
+          if command ls --color=auto -d . >/dev/null 2>&1; then
+            command ls --color=auto "$@"
+          else
+            command ls -G "$@"
+          fi
+        }
       '';
       profileExtra = lib.mkIf (isDarwin && (config.homebrew.enable or false)) ''
         if [ -x "${brewBin}" ]; then

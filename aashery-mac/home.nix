@@ -39,6 +39,7 @@ in {
 
     casks = [
       "amethyst"
+      "chatgpt"
     ];
 
     autoBundleOnSwitch = true;
