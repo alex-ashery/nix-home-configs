@@ -1,4 +1,5 @@
 [
+  ../modules/copyq
   ../modules/git
   ../modules/kitty
   ../modules/neovim
