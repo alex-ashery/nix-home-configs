@@ -13,7 +13,7 @@ in {
     username = uname;
     homeDirectory = "/Users/${uname}";
     packages = import ./packages.nix { inherit pkgs inputs; };
-    sessionVariables.EDITOR = "vim";
+    sessionVariables.EDITOR = "nvim";
     stateVersion = "20.09";
 
     # Shim for linking HM managed apps into spotlight

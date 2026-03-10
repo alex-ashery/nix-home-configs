@@ -1,7 +1,7 @@
 [
   ../modules/git
   ../modules/kitty
-  ../modules/vim
+  ../modules/neovim
   ../modules/zsh
   ../modules/direnv
   ../modules/homebrew

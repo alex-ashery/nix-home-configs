@@ -8,13 +8,8 @@
       vim-surround
       vim-nix
       fzf-vim
+      molokai
     ];
-    settings = {
-      number = true;
-      relativenumber = true;
-      expandtab = true;
-      smartcase = true;
-    };
     extraConfig = builtins.readFile ./vimrc;
   };
 }

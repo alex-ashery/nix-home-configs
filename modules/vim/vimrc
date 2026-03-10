@@ -1,4 +1,8 @@
 highlight Comment cterm=bold
+set number
+set relativenumber
+set expandtab
+set smartcase
 set linebreak
 set wrap
 set wildmode=longest:list,full
@@ -12,6 +16,7 @@ set incsearch
 
 filetype plugin on
 syntax on
+colorscheme molokai
 set shellcmdflag=-c
 
 " leader key
@@ -21,6 +26,7 @@ let mapleader = " "
 " fzf config
 " Prefix all fzf.vim exported commands with "Fzf"
 let g:fzf_command_prefix = 'Fzf'
+let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --no-ignore -g "!.git"'
 
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1
@@ -42,6 +48,7 @@ nnoremap <silent> <leader>o :FzfFiles<CR>
 nnoremap <silent> <leader>O :FzfFiles /<CR>
 nnoremap <silent> <leader>b :FzfBuffers<CR>
 nnoremap <silent> <leader>r :FzfRg<CR>
+nnoremap <silent> <leader>lc :lclose<CR>
 
 " netrw
 let g:netrw_banner = 0
