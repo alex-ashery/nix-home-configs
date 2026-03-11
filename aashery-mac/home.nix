@@ -45,11 +45,17 @@ in {
     autoBundleOnSwitch = true;
   };
 
-  nix.enable = true;
-  nix.package = pkgs.nix;
-  nix.extraOptions = lib.optionalString hasSopsToken ''
-    !include ${config.xdg.configHome}/nix/secrets/nix-access-tokens
-  '';
+  nix = {
+    enable = true;
+    package = pkgs.nix;
+    settings.substituters  = [
+          "https://cache.nixos.org/"
+          "https://install.determinate.systems"
+    ];
+    extraOptions = lib.optionalString hasSopsToken ''
+      !include ${config.xdg.configHome}/nix/secrets/nix-access-tokens
+    '';
+  };
 
   sops = lib.mkIf hasSopsToken {
     age.keyFile = "/Users/${uname}/.config/sops/age/keys.txt";

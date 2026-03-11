@@ -49,16 +49,12 @@ nnoremap <silent> <leader>O :FzfFiles /<CR>
 nnoremap <silent> <leader>b :FzfBuffers<CR>
 nnoremap <silent> <leader>r :FzfRg<CR>
 nnoremap <silent> <leader>lc :lclose<CR>
+xnoremap % <Esc>%
+xnoremap g% <Esc>g%
 
 " netrw
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
 
-" yank to clipboard
-if has("clipboard")
-  set clipboard=unnamed " copy to the system clipboard
-
-  if has("unnamedplus") " X11 support
-    set clipboard+=unnamedplus
-  endif
-endif
+" Keep system clipboard opt-in via registers such as \"+
+set clipboard=

@@ -12,6 +12,7 @@
       vim-surround
       vim-nix
       fzf-vim
+      fzf-lua
       nvim-lspconfig
       nvim-cmp
       cmp-nvim-lsp
@@ -31,6 +32,11 @@
     extraConfig = builtins.readFile ../vim/vimrc;
 
     extraLuaConfig = ''
+      local has_fzf_lua, fzf_lua = pcall(require, "fzf-lua")
+      if has_fzf_lua then
+        fzf_lua.setup({})
+      end
+
       local cmp = require("cmp")
       cmp.setup({
         snippet = {
@@ -63,8 +69,12 @@
         vim.keymap.set("n", "<leader>dn", vim.diagnostic.goto_next, opts)
         vim.keymap.set("n", "<leader>df", vim.diagnostic.open_float, opts)
         vim.keymap.set("n", "<leader>dl", function()
-          vim.diagnostic.setloclist({ open = false })
-          vim.cmd("lopen")
+          if has_fzf_lua then
+            fzf_lua.diagnostics_document()
+          else
+            vim.diagnostic.setloclist({ open = false })
+            vim.cmd("lopen")
+          end
         end, opts)
       end
 
