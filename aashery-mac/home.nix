@@ -30,6 +30,8 @@ in {
     program: {enable = true;}
   );
 
+  modules.codex.enable = true;
+
   homebrew = {
     enable = true;
     brews = [

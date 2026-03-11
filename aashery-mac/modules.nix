@@ -7,4 +7,5 @@
   ../modules/direnv
   ../modules/homebrew
   ../modules/ssh
+  ../modules/codex
 ]
