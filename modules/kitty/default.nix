@@ -14,6 +14,10 @@ in
       "ctrl+shift+k" = "next_tab";
       "ctrl+shift+x" = "close_tab";
       "ctrl+shift+n" = "set_tab_title";
+      "ctrl+shift+left" = "resize_window narrower";
+      "ctrl+shift+right" = "resize_window wider";
+      "ctrl+shift+down" = "resize_window taller";
+      "ctrl+shift+up" = "resize_window shorter";
       "ctrl+<" = "move_tab_backward";
       "ctrl+>" = "move_tab_foreward";
     } // lib.optionalAttrs codexEnabled {
