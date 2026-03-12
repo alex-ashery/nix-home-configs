@@ -13,7 +13,10 @@ in {
     username = uname;
     homeDirectory = "/Users/${uname}";
     packages = import ./packages.nix { inherit pkgs inputs; };
-    sessionVariables.EDITOR = "nvim";
+    sessionVariables = {
+      EDITOR = "nvim";
+      GITHUB_DEFAULT_ORG = "alex-ashery";
+    };
     stateVersion = "20.09";
 
     # Shim for linking HM managed apps into spotlight

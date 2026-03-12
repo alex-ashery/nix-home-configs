@@ -1,0 +1,2 @@
+compdef _dev_repo_completion devcd
+compdef _dev_repo_completion devcl

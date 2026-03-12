@@ -6,6 +6,15 @@ let
     then "/opt/homebrew"
     else "/usr/local";
   brewBin = "${brewPrefix}/bin/brew";
+  initDir = ./init;
+  initFiles = map (name: initDir + "/${name}") (
+    builtins.attrNames (
+      lib.filterAttrs (name: type:
+        type == "regular" && lib.hasSuffix ".zsh" name
+      ) (builtins.readDir initDir)
+    )
+  );
+  initContent = lib.concatMapStringsSep "\n\n" builtins.readFile initFiles;
 in
 {
   config = {
@@ -19,12 +28,7 @@ in
           file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
         }
       ];
-      initContent = ''
-        # Make Vi mode transitions faster (KEYTIMEOUT is in hundreths of a second)
-        export KEYTIMEOUT=1
-        bindkey -v
-        source .zsh/p10k.zsh
-      '' + lib.optionalString isDarwin ''
+      initContent = initContent + lib.optionalString isDarwin ''
         # Make `ls` colors work whether `ls` resolves to GNU or BSD tools.
         unalias ls 2>/dev/null || true
         ls() {

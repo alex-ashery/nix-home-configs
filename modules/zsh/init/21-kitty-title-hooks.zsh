@@ -1,0 +1,2 @@
+add-zsh-hook chpwd _kitty_apply_tab_title_override
+add-zsh-hook precmd _kitty_apply_tab_title_override

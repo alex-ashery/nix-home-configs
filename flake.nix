@@ -55,11 +55,15 @@
           default = pkgs.mkShell {
             packages = [
               pkgs.age
+              pkgs.pre-commit
               pkgs.sops
             ];
             SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";
             shellHook = ''
               export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
+              if [ -d .git ]; then
+                pre-commit install --install-hooks >/dev/null 2>&1 || true
+              fi
             '';
           };
         });

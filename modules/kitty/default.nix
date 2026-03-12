@@ -8,6 +8,7 @@ in
   config.programs.kitty = {
     enable = true;
     package = pkgs.unstable.kitty;
+    shellIntegration.mode = "enabled no-title";
     keybindings = {
       "ctrl+shift+j" = "previous_tab";
       "ctrl+shift+k" = "next_tab";
@@ -16,9 +17,9 @@ in
       "ctrl+<" = "move_tab_backward";
       "ctrl+>" = "move_tab_foreward";
     } // lib.optionalAttrs codexEnabled {
-      "ctrl+shift+c" = "launch --type=window --location=vsplit --cwd=current --title=Codex /Users/aashery/.nix-profile/bin/codex resume --last";
+      "ctrl+shift+c" = "launch --type=window --location=vsplit --cwd=current --title=current codex resume --last";
     } // lib.optionalAttrs vimEnabled {
-      "ctrl+shift+v" = "launch --type=overlay-main --cwd=current --title=Vim ${vimCommand} .";
+      "ctrl+shift+v" = "launch --type=overlay-main --cwd=current --title=current ${vimCommand} .";
     };
     settings = {
       shell = lib.mkIf config.programs.zsh.enable "zsh";
