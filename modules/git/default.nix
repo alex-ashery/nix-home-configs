@@ -11,6 +11,7 @@ in
           name = "alex-ashery";
           email = "alexander.ashery@gmail.com";
         };
+        init.defaultBranch = "main";
         pager = {
           branch = "false";
           diff = "false";
