@@ -5,6 +5,15 @@ in
 {
   homebrew.casks = lib.mkAfter [ "copyq" ];
 
+  launchd.agents.copyq = {
+    enable = true;
+    config = {
+      ProgramArguments = [ "/usr/bin/open" "-a" "CopyQ" ];
+      RunAtLoad = true;
+      KeepAlive = false;
+    };
+  };
+
   home.activation.fixCopyQDarwin = lib.mkIf (config.homebrew.enable or false)
     (lib.hm.dag.entryAfter [ "brewBundle" ] ''
       set -euo pipefail

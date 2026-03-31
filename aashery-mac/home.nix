@@ -43,8 +43,8 @@ in {
     ];
 
     casks = [
-      "amethyst"
       "chatgpt"
+      "discord"
     ];
 
     autoBundleOnSwitch = true;

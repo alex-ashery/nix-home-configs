@@ -1,4 +1,5 @@
 [
+  ../modules/amethyst
   ../modules/copyq
   ../modules/git
   ../modules/kitty
