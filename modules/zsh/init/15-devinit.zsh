@@ -1,4 +1,4 @@
-devinit() {
+_dev_new() {
   local target_dir remote_url default_owner
 
   case "$#" in
@@ -15,7 +15,7 @@ devinit() {
       remote_url="git@github.com:$1/$2.git"
       ;;
     *)
-      echo "usage: devinit [repo] | [org repo]" >&2
+      echo "usage: dev new [repo] | [org repo]" >&2
       return 1
       ;;
   esac

@@ -1,4 +1,4 @@
-devcd() {
+_dev_cd() {
   local parts org repo
   _dev_repo_parts "$@" || return 1
   parts="$REPLY"

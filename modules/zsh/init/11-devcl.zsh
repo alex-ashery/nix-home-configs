@@ -1,4 +1,4 @@
-devcl() {
+_dev_clone() {
   local parts org repo dev_dir
   _dev_repo_parts "$@" || return 1
   parts="$REPLY"

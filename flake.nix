@@ -66,6 +66,19 @@
               fi
             '';
           };
+
+          go = pkgs.mkShell {
+            packages = [
+              pkgs.go
+              pkgs.gopls
+              pkgs.golangci-lint
+              pkgs.delve
+            ];
+
+            shellHook = ''
+              export EDITOR="${pkgs.neovim}/bin/nvim"
+            '';
+          };
         });
     };
 }

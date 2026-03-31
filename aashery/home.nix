@@ -12,7 +12,10 @@ in
     username = uname;
     homeDirectory = "/home/${uname}";
     packages = import ./packages.nix pkgs;
-    sessionVariables.EDITOR = "vim";
+    sessionVariables = {
+      EDITOR = "vim";
+      NIX_HOME_CONFIGS_FLAKE = "${config.home.homeDirectory}/Development/alex-ashery/nix-home-configs";
+    };
     stateVersion = "20.09";
   };
 
