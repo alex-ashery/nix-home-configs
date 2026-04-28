@@ -1,25 +1,17 @@
 pkgs:
-let
-  pulseaudio_custom = pkgs.pulseaudio.overrideAttrs (old: {
-    src = pkgs.fetchurl {
-      url = http://freedesktop.org/software/pulseaudio/releases/pulseaudio-16.1.tar.xz;
-      sha256 = "sha256-ju8yzpHUeXn5X9mpNec4zX63RjQw2rxyhjJRdR5QSuQ=";
-    };
-  });
-in
 with pkgs; [
     libnotify
     vlc
     pavucontrol
     joplin
     joplin-desktop
-    (nerdfonts.override { fonts = [ "Meslo" ]; })
+    nerd-fonts.meslo-lg
     acpi
     lua5_2
     unzip
     yq
     ripgrep
-    pulseaudio_custom
+    pulseaudio
     calcurse
     # spectacle
     betterlockscreen
@@ -30,4 +22,14 @@ with pkgs; [
     (pkgs.buildEnv { name = "bright"; paths = [ ./. ]; })
     docker-compose
     pinentry-curses
+    sops
+    glow
+    bind
+    tcpdump
+    avahi
+    (python3.withPackages(ps: with ps; [ i3ipc pip ]))
+    libreoffice-qt
+    hunspell
+    hunspellDicts.uk_UA
+    hunspellDicts.th_TH
 ]

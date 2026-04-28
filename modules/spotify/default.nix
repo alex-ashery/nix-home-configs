@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 {
   config = {
-    home.packages = [ pkgs.spotify-tui ];
+    home.packages = [ pkgs.spotify-player ];
     services.spotifyd = {
       enable = true;
       settings.spotifyd = {
