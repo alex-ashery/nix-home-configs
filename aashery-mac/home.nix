@@ -15,7 +15,6 @@ in {
     packages = import ./packages.nix { inherit pkgs inputs; };
     sessionVariables = {
       EDITOR = "nvim";
-      GITHUB_DEFAULT_ORG = "alex-ashery";
       NIX_HOME_CONFIGS_FLAKE = "${config.home.homeDirectory}/Development/alex-ashery/nix-home-configs";
     };
     stateVersion = "20.09";
