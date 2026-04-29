@@ -1,3 +1,4 @@
 *.swp
 .direnv/
 .nvimlog
+.codex

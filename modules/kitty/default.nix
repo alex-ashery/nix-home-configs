@@ -21,9 +21,9 @@ in
       "ctrl+<" = "move_tab_backward";
       "ctrl+>" = "move_tab_foreward";
     } // lib.optionalAttrs codexEnabled {
-      "ctrl+shift+c" = "launch --type=window --location=vsplit --cwd=current --title=current codex resume --last";
+      "ctrl+alt+c" = "launch --type=window --location=vsplit --cwd=current --title=current codex resume --last";
     } // lib.optionalAttrs vimEnabled {
-      "ctrl+shift+v" = "launch --type=overlay-main --cwd=current --title=current ${vimCommand} .";
+      "ctrl+alt+v" = "launch --type=overlay-main --cwd=current --title=current ${vimCommand} .";
     };
     settings = {
       shell = lib.mkIf config.programs.zsh.enable "zsh";

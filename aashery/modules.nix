@@ -14,4 +14,5 @@
   ../modules/rofi_screenshot
   ../modules/direnv
   ../modules/ssh
+  ../modules/codex
 ]

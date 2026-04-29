@@ -11,9 +11,10 @@ in
   home = {
     username = uname;
     homeDirectory = "/home/${uname}";
-    packages = import ./packages.nix pkgs;
+    packages = import ./packages.nix { inherit pkgs inputs; };
     sessionVariables = {
       EDITOR = "vim";
+      GITHUB_DEFAULT_ORG = "alex-ashery";
       NIX_HOME_CONFIGS_FLAKE = "${config.home.homeDirectory}/Development/alex-ashery/nix-home-configs";
     };
     stateVersion = "20.09";
@@ -24,6 +25,8 @@ in
     # place a script in the path expected by NixOS for starting the session
     scriptPath = ".hm-xsession";
   };
+
+  modules.codex.enable = true;
 
   # For each program in the list, generate an attributeSet for it enabling the program
   programs = pkgs.lib.genAttrs (import ./programs.nix) (

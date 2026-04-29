@@ -29,7 +29,11 @@
       };
       homeConfigurations = {
         "aashery" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.${linuxSystem};
+          # pkgs = nixpkgs.legacyPackages.${linuxSystem};
+          pkgs = import nixpkgs {
+            system = linuxSystem;
+            config.allowUnfree = true;
+          };
           extraSpecialArgs = {
             inherit inputs outputs;
             keyMap = import ./keymap.nix;
