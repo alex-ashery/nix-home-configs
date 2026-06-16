@@ -11,6 +11,7 @@
       vim-fugitive
       vim-surround
       vim-nix
+      direnv-vim
       fzf-vim
       fzf-lua
       nvim-lspconfig
@@ -25,7 +26,6 @@
       nixd
       lua-language-server
       bash-language-server
-      gopls
       yaml-language-server
     ];
 
@@ -115,12 +115,30 @@
       vim.lsp.enable("nixd")
       vim.lsp.enable("lua_ls")
       vim.lsp.enable("bashls")
-      vim.lsp.enable("gopls")
       vim.lsp.enable("yamlls")
+
+      local gopls_enabled = false
+      local enable_gopls_if_available = function()
+        if gopls_enabled then
+          return
+        end
+
+        if vim.fn.executable("gopls") == 1 and vim.fn.executable("go") == 1 then
+          gopls_enabled = true
+          vim.lsp.enable("gopls")
+        end
+      end
+
+      vim.api.nvim_create_autocmd({ "VimEnter", "BufEnter", "DirChanged" }, {
+        callback = function()
+          vim.defer_fn(enable_gopls_if_available, 100)
+        end,
+      })
 
       vim.api.nvim_create_autocmd("FileType", {
         pattern = "go",
         callback = function()
+          vim.defer_fn(enable_gopls_if_available, 100)
           vim.opt_local.expandtab = false
           vim.opt_local.tabstop = 4
           vim.opt_local.shiftwidth = 4

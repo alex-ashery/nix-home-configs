@@ -20,6 +20,7 @@ in
       "ctrl+shift+up" = "resize_window shorter";
       "ctrl+<" = "move_tab_backward";
       "ctrl+>" = "move_tab_foreward";
+      "ctrl+shift+s" = "launch --type=window --location=vsplit --cwd=current";
     } // lib.optionalAttrs codexEnabled {
       "ctrl+alt+c" = "launch --type=window --location=vsplit --cwd=current --title=current codex resume --last";
     } // lib.optionalAttrs vimEnabled {

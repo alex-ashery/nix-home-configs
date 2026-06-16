@@ -13,6 +13,7 @@ in {
     username = uname;
     homeDirectory = "/Users/${uname}";
     packages = import ./packages.nix { inherit pkgs inputs; };
+    sessionPath = [ "/usr/local/bin" ];
     sessionVariables = {
       EDITOR = "nvim";
       NIX_HOME_CONFIGS_FLAKE = "${config.home.homeDirectory}/Development/alex-ashery/nix-home-configs";
@@ -45,6 +46,8 @@ in {
     casks = [
       "chatgpt"
       "discord"
+      "docker"
+      "signal"
     ];
 
     autoBundleOnSwitch = true;
