@@ -26,11 +26,15 @@ _dev_repo_completion() {
   esac
 }
 
-_dev_shell_completion() {
-  local -a shells
+_dev_template_completion() {
+  local template_dir
+  local -a templates
 
-  shells=(${(f)"$(_nix_home_configs_devshells 2>/dev/null)"})
-  (( $#shells )) && compadd -Q -S "" -a shells
+  template_dir="${NIX_DEV_FLAKE_TEMPLATE_DIR:-$HOME/Development/alex-ashery/nix-templates/templates}"
+  if [[ -d "${template_dir}" ]]; then
+    templates=("${template_dir}"/*(/N:t))
+    (( $#templates )) && compadd -Q -S "" -a templates
+  fi
 }
 
 _dev_completion() {
@@ -39,8 +43,8 @@ _dev_completion() {
   subcommands=(
     'clone:clone a repository into ~/Development'
     'cd:change directory to a repository in ~/Development'
-    'new:create a new repository with your standard flake setup'
-    'init:configure direnv for an existing repository'
+    'new:create a new repository with a selected flake template'
+    'init:add a selected flake template to an existing repository'
     'help:show dev command usage'
   )
 
@@ -50,7 +54,7 @@ _dev_completion() {
       ;;
     3|4)
       case "${words[2]}" in
-        clone|cd|new)
+        clone|cd)
           local saved_current saved_words
           saved_current=$CURRENT
           saved_words=("${words[@]}")
@@ -60,9 +64,24 @@ _dev_completion() {
           words=("${saved_words[@]}")
           CURRENT=$saved_current
           ;;
+        new)
+          if [[ "${words[CURRENT - 1]}" == "-t" || "${words[CURRENT - 1]}" == "--template" ]]; then
+            _dev_template_completion
+          elif (( CURRENT == 3 )); then
+            _arguments \
+              '(-t --template)'{-t,--template}'[select flake template]:template:_dev_template_completion' \
+              '*::repo:_dev_repo_completion'
+          else
+            _dev_repo_completion
+          fi
+          ;;
         init)
-          if (( CURRENT == 3 )); then
-            _dev_shell_completion
+          if [[ "${words[CURRENT - 1]}" == "-t" || "${words[CURRENT - 1]}" == "--template" ]]; then
+            _dev_template_completion
+          elif (( CURRENT == 3 )); then
+            _arguments \
+              '(-t --template)'{-t,--template}'[select flake template]:template:_dev_template_completion' \
+              '1:template:_dev_template_completion'
           fi
           ;;
       esac

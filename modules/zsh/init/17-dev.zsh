@@ -24,8 +24,8 @@ dev() {
 usage:
   dev clone [org] repo
   dev cd [org] repo
-  dev new [repo] | [org repo]
-  dev init [shell]
+  dev new [-t template] [repo] | [org repo]
+  dev init [-t template] [template]
 EOF
       ;;
     *)
