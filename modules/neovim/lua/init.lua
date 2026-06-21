@@ -1,0 +1,8 @@
+require("aashery.fzf")
+require("aashery.cmp")
+require("aashery.lsp")
+require("aashery.nix")
+require("aashery.lua")
+require("aashery.bash")
+require("aashery.yaml")
+require("aashery.go")

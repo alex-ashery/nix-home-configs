@@ -39,6 +39,11 @@ in
           fi
         }
       '';
+      envExtra = lib.optionalString isDarwin ''
+        if [ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
+          . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+        fi
+      '';
       profileExtra = lib.mkIf (isDarwin && (config.homebrew.enable or false)) ''
         if [ -x "${brewBin}" ]; then
           eval "$("${brewBin}" shellenv)"

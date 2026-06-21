@@ -2,14 +2,7 @@
 {
   config.programs.vim = {
     enable = true;
-    plugins = with pkgs.vimPlugins; [
-      vim-airline
-      vim-fugitive
-      vim-surround
-      vim-nix
-      fzf-vim
-      molokai
-    ];
+    plugins = import ./plugins.nix { inherit pkgs; };
     extraConfig = builtins.readFile ./vimrc;
   };
 }

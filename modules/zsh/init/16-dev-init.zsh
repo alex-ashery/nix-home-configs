@@ -1,8 +1,15 @@
 _dev_template_ref() {
-  local template_name template_source
+  local template_name template_source local_template_source
 
   template_name="${1:-}"
-  template_source="${NIX_DEV_FLAKE_TEMPLATE_SOURCE:-github:alex-ashery/nix-templates}"
+  local_template_source="${NIX_DEV_FLAKE_TEMPLATE_SOURCE:-$HOME/Development/alex-ashery/nix-templates}"
+  if [[ -n "${NIX_DEV_FLAKE_TEMPLATE_SOURCE:-}" ]]; then
+    template_source="${NIX_DEV_FLAKE_TEMPLATE_SOURCE}"
+  elif [[ -f "${local_template_source}/flake.nix" ]]; then
+    template_source="${local_template_source}"
+  else
+    template_source="github:alex-ashery/nix-templates"
+  fi
 
   if [[ -z "${template_name}" ]]; then
     REPLY="${NIX_DEV_FLAKE_TEMPLATE:-${template_source}#base}"
