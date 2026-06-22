@@ -20,6 +20,10 @@ in
         cmp-nvim-lsp
         cmp-buffer
         cmp-path
+        cmp-cmdline
+        nvim-dap
+        nvim-dap-go
+        nvim-dap-view
       ]);
 
       extraPackages = with pkgs; [

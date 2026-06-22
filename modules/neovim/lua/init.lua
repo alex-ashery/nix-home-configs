@@ -1,5 +1,6 @@
 require("aashery.fzf")
 require("aashery.cmp")
+require("aashery.dap")
 require("aashery.lsp")
 require("aashery.nix")
 require("aashery.lua")
