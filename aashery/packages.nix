@@ -31,6 +31,5 @@ with pkgs; [
     libreoffice-qt
     hunspell
     hunspellDicts.uk_UA
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex
     hunspellDicts.th_TH
 ]

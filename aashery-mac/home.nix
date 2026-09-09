@@ -34,7 +34,10 @@ in {
     program: {enable = true;}
   );
 
-  modules.codex.enable = true;
+  modules.llmCli = {
+    primary = "codex";
+    packages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+  };
 
   homebrew = {
     enable = true;

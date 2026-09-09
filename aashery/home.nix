@@ -25,7 +25,10 @@ in
     scriptPath = ".hm-xsession";
   };
 
-  modules.codex.enable = true;
+  modules.llmCli = {
+    primary = "codex";
+    packages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+  };
 
   # For each program in the list, generate an attributeSet for it enabling the program
   programs = pkgs.lib.genAttrs (import ./programs.nix) (

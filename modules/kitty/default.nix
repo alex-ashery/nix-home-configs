@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 let
-  codexEnabled = lib.attrByPath [ "modules" "codex" "enable" ] false config;
+  llmCliLaunchCommand = lib.attrByPath [ "modules" "llmCli" "kittyLaunchCommand" ] null config;
+  llmCliEnabled = llmCliLaunchCommand != null;
   vimEnabled = config.programs.vim.enable || config.programs.neovim.enable;
   vimCommand = if config.programs.neovim.enable then "nvim" else "vim";
 in
@@ -21,8 +22,8 @@ in
       "ctrl+<" = "move_tab_backward";
       "ctrl+>" = "move_tab_foreward";
       "ctrl+shift+s" = "launch --type=window --location=vsplit --cwd=current";
-    } // lib.optionalAttrs codexEnabled {
-      "ctrl+alt+c" = "launch --type=window --location=vsplit --cwd=current --title=current codex resume --last";
+    } // lib.optionalAttrs llmCliEnabled {
+      "ctrl+alt+c" = "launch --type=window --location=vsplit --cwd=current --title=current ${llmCliLaunchCommand}";
     } // lib.optionalAttrs vimEnabled {
       "ctrl+alt+v" = "launch --type=overlay-main --cwd=current --title=current ${vimCommand} .";
     };
