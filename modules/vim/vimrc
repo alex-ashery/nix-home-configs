@@ -44,6 +44,7 @@ imap <c-x><c-l> <plug>(fzf-complete-buffer-line)
 nnoremap <silent> <leader>n :bn<CR>
 nnoremap <silent> <leader>p :bp<CR>
 nnoremap <silent> <leader>s :w<CR>
+nnoremap <silent> <leader>f :Ex<CR>
 nnoremap <silent> <leader>o :FzfFiles<CR>
 nnoremap <silent> <leader>O :FzfFiles /<CR>
 nnoremap <silent> <leader>b :FzfBuffers<CR>

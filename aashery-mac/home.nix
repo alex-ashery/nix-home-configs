@@ -48,6 +48,7 @@ in {
       "discord"
       "docker"
       "signal"
+      "pinta"
     ];
 
     autoBundleOnSwitch = true;
