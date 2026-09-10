@@ -1,50 +1,19 @@
-{ inputs, outputs, lib, config, pkgs, ... }:
+{ lib, config, ... }:
 
 let
   uname = "aashery";
   sopsTokenFile = ../secrets/github-token.sops.yaml;
   hasSopsToken = builtins.pathExists sopsTokenFile;
 in {
-  fonts.fontconfig.enable = true;
-  imports = import ./modules.nix;
-  nixpkgs.overlays = [ outputs.overlays.unstable-packages ];
-
   home = {
     username = uname;
     homeDirectory = "/Users/${uname}";
-    packages = import ./packages.nix { inherit pkgs inputs; };
-    sessionPath = [ "/usr/local/bin" ];
-    sessionVariables = {
-      EDITOR = "nvim";
-      NIX_HOME_CONFIGS_FLAKE = "${config.home.homeDirectory}/Development/alex-ashery/nix-home-configs";
-    };
-    stateVersion = "20.09";
-
-    # Shim for linking HM managed apps into spotlight
-    activation.makeTrampolineApps = lib.hm.dag.entryAfter [ "writeBoundary" ] (
-      builtins.readFile ./make-app-trampolines.sh
-    );
-    activation.ensureSopsAgeDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      mkdir -p "$HOME/.config/sops/age"
-    '';
   };
 
-  # For each program in the list, generate an attributeSet for it enabling the program
-  programs = pkgs.lib.genAttrs (import ./programs.nix) (
-    program: {enable = true;}
-  );
-
-  modules.llmCli = {
-    primary = "codex";
-    packages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
-  };
+  programs.password-store.enable = true;
 
   homebrew = {
     enable = true;
-    brews = [
-      "ripgrep"
-      "gh"
-    ];
 
     casks = [
       "chatgpt"
@@ -58,12 +27,6 @@ in {
   };
 
   nix = {
-    enable = true;
-    package = pkgs.nix;
-    settings.substituters  = [
-          "https://cache.nixos.org/"
-          "https://install.determinate.systems"
-    ];
     extraOptions = lib.optionalString hasSopsToken ''
       !include ${config.xdg.configHome}/nix/secrets/nix-access-tokens
     '';

@@ -1,5 +1,6 @@
 { config, pkgs, lib, ... }:
 let
+  cfg = config.modules.zsh;
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   brewPrefix =
     if pkgs.stdenv.hostPlatform.isAarch64
@@ -17,7 +18,40 @@ let
   initContent = lib.concatMapStringsSep "\n\n" builtins.readFile initFiles;
 in
 {
+  options.modules.zsh.dev = {
+    defaultGithubOrg = lib.mkOption {
+      type = lib.types.str;
+      default = "alex-ashery";
+      description = "Default GitHub owner used by dev shell helpers.";
+    };
+
+    flakeTemplateDir = lib.mkOption {
+      type = lib.types.str;
+      default = "$HOME/Development/alex-ashery/nix-templates/templates";
+      description = "Local template directory used for zsh completion.";
+    };
+
+    localFlakeTemplateSource = lib.mkOption {
+      type = lib.types.str;
+      default = "$HOME/Development/alex-ashery/nix-templates";
+      description = "Local flake template source used by dev init.";
+    };
+
+    remoteFlakeTemplateSource = lib.mkOption {
+      type = lib.types.str;
+      default = "github:alex-ashery/nix-templates";
+      description = "Remote flake template source fallback used by dev init.";
+    };
+  };
+
   config = {
+    home.sessionVariables = {
+      GITHUB_DEFAULT_ORG = cfg.dev.defaultGithubOrg;
+      NIX_DEV_FLAKE_TEMPLATE_DIR = cfg.dev.flakeTemplateDir;
+      NIX_DEV_FLAKE_TEMPLATE_SOURCE = cfg.dev.localFlakeTemplateSource;
+      NIX_DEV_FLAKE_TEMPLATE_REMOTE_SOURCE = cfg.dev.remoteFlakeTemplateSource;
+    };
+
     programs.zsh = {
       enable = true;
       enableCompletion = true;

@@ -27,6 +27,24 @@
           system = final.stdenv.hostPlatform.system;
         };
       };
+
+      homeManagerModules = {
+        amethyst = ./modules/amethyst;
+        copyq = ./modules/copyq;
+        direnv = ./modules/direnv;
+        git = ./modules/git;
+        homebrew = ./modules/homebrew;
+        kitty = ./modules/kitty;
+        llm-cli = ./modules/llm-cli;
+        neovim = ./modules/neovim;
+        ssh = ./modules/ssh;
+        zsh = ./modules/zsh;
+      };
+
+      homeProfiles = {
+        darwinBase = import ./profiles/darwin-base.nix { inherit inputs outputs; };
+      };
+
       homeConfigurations = {
         "aashery" = home-manager.lib.homeManagerConfiguration {
           # pkgs = nixpkgs.legacyPackages.${linuxSystem};
@@ -47,6 +65,7 @@
           };
           modules = [
             sops-nix.homeManagerModules.sops
+            self.homeProfiles.darwinBase
             ./aashery-mac/home.nix
           ];
         };

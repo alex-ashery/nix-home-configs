@@ -8,7 +8,7 @@ _dev_template_ref() {
   elif [[ -f "${local_template_source}/flake.nix" ]]; then
     template_source="${local_template_source}"
   else
-    template_source="github:alex-ashery/nix-templates"
+    template_source="${NIX_DEV_FLAKE_TEMPLATE_REMOTE_SOURCE:-github:alex-ashery/nix-templates}"
   fi
 
   if [[ -z "${template_name}" ]]; then

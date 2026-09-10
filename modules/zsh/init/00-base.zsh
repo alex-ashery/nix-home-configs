@@ -1,6 +1,6 @@
 # Make Vi mode transitions faster (KEYTIMEOUT is in hundreths of a second)
 export KEYTIMEOUT=1
-export GITHUB_DEFAULT_ORG="alex-ashery"
+export GITHUB_DEFAULT_ORG="${GITHUB_DEFAULT_ORG:-alex-ashery}"
 bindkey -v
 [[ -r ~/.zsh/p10k.zsh ]] && source ~/.zsh/p10k.zsh
 

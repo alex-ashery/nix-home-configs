@@ -1,15 +1,30 @@
 { config, lib, pkgs, ... }:
 let
+  cfg = config.modules.git;
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
 in
 {
+  options.modules.git = {
+    userName = lib.mkOption {
+      type = lib.types.str;
+      default = "alex-ashery";
+      description = "Git author name for this Home Manager profile.";
+    };
+
+    userEmail = lib.mkOption {
+      type = lib.types.str;
+      default = "alexander.ashery@gmail.com";
+      description = "Git author email for this Home Manager profile.";
+    };
+  };
+
   config.programs.git = {
     enable = true;
     settings = lib.mkMerge [
       {
         user = {
-          name = "alex-ashery";
-          email = "alexander.ashery@gmail.com";
+          name = cfg.userName;
+          email = cfg.userEmail;
         };
         init.defaultBranch = "main";
         pager = {
