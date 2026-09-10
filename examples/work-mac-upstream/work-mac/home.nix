@@ -7,11 +7,6 @@ in
     homeDirectory = "/Users/${username}";
   };
 
-  modules.git = {
-    userName = "Work Name";
-    userEmail = "work.name@example.com";
-  };
-
   modules.zsh.dev = {
     defaultGithubOrg = "work-org";
     flakeTemplateDir = "$HOME/Development/work/nix-templates/templates";

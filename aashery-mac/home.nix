@@ -2,8 +2,8 @@
 
 let
   uname = "aashery";
-  sopsTokenFile = ../secrets/github-token.sops.yaml;
-  hasSopsToken = builtins.pathExists sopsTokenFile;
+  personalSopsFile = ../secrets/personal.sops.yaml;
+  hasPersonalSopsFile = builtins.pathExists personalSopsFile;
 in {
   home = {
     username = uname;
@@ -11,6 +11,12 @@ in {
   };
 
   programs.password-store.enable = true;
+
+  programs.git.includes = lib.optionals hasPersonalSopsFile [
+    {
+      path = config.sops.secrets."git-identity".path;
+    }
+  ];
 
   homebrew = {
     enable = true;
@@ -27,15 +33,19 @@ in {
   };
 
   nix = {
-    extraOptions = lib.optionalString hasSopsToken ''
+    extraOptions = lib.optionalString hasPersonalSopsFile ''
       !include ${config.xdg.configHome}/nix/secrets/nix-access-tokens
     '';
   };
 
-  sops = lib.mkIf hasSopsToken {
+  sops = lib.mkIf hasPersonalSopsFile {
     age.keyFile = "/Users/${uname}/.config/sops/age/keys.txt";
+    secrets."git-identity" = {
+      sopsFile = personalSopsFile;
+      path = "${config.xdg.configHome}/git/secrets/identity";
+    };
     secrets."nix-access-tokens" = {
-      sopsFile = sopsTokenFile;
+      sopsFile = personalSopsFile;
       path = "${config.xdg.configHome}/nix/secrets/nix-access-tokens";
     };
   };
