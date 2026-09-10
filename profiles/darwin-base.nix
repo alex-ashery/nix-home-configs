@@ -51,8 +51,8 @@
   });
 
   modules.llmCli = {
-    primary = "codex";
-    packages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+    primary = lib.mkDefault "codex";
+    packages = lib.mkDefault inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   };
 
   nix = {
