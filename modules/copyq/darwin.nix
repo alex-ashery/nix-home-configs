@@ -18,12 +18,11 @@ in
     (lib.hm.dag.entryAfter [ "brewBundle" ] ''
       set -euo pipefail
 
-      if [ ! -d "${copyqApp}" ]; then
+      if [ -d "${copyqApp}" ]; then
+        xattr -d com.apple.quarantine "${copyqApp}" >/dev/null 2>&1 || true
+        codesign --force --deep --sign - "${copyqApp}"
+      else
         echo "CopyQ.app not found at ${copyqApp}; skipping quarantine/signing fixes."
-        exit 0
       fi
-
-      xattr -d com.apple.quarantine "${copyqApp}" >/dev/null 2>&1 || true
-      codesign --force --deep --sign - "${copyqApp}"
     '');
 }
