@@ -127,6 +127,7 @@ in
     (lib.hm.dag.entryAfter [ "installHomebrew" ] ''
       set -euo pipefail
       echo "Running brew bundle..."
+      export HOMEBREW_NO_ENV_HINTS=1
       "${brewBin}" bundle --file "${brewfilePath}"
     '');
   };

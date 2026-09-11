@@ -29,7 +29,7 @@ in {
     casks = [
       "chatgpt"
       "discord"
-      "docker"
+      "docker-desktop"
       "signal"
       "pinta"
     ];
@@ -37,21 +37,11 @@ in {
     autoBundleOnSwitch = true;
   };
 
-  nix = {
-    extraOptions = lib.optionalString hasPersonalSopsFile ''
-      !include ${config.xdg.configHome}/nix/secrets/nix-access-tokens
-    '';
-  };
-
   sops = lib.mkIf hasPersonalSopsFile {
     age.keyFile = "/Users/${uname}/.config/sops/age/keys.txt";
     secrets."git-identity" = {
       sopsFile = personalSopsFile;
       path = "${config.xdg.configHome}/git/secrets/identity";
-    };
-    secrets."nix-access-tokens" = {
-      sopsFile = personalSopsFile;
-      path = "${config.xdg.configHome}/nix/secrets/nix-access-tokens";
     };
   };
 }

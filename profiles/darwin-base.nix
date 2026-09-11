@@ -16,6 +16,7 @@
   ];
 
   fonts.fontconfig.enable = true;
+  manual.manpages.enable = false;
   nixpkgs.overlays = [ outputs.overlays.unstable-packages ];
 
   home = {
@@ -55,12 +56,5 @@
     packages = lib.mkDefault inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   };
 
-  nix = {
-    enable = true;
-    package = pkgs.nix;
-    settings.substituters = [
-      "https://cache.nixos.org/"
-      "https://install.determinate.systems"
-    ];
-  };
+  nix.package = null;
 }
