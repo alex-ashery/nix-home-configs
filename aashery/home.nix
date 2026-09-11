@@ -31,9 +31,16 @@ in
   };
 
   # For each program in the list, generate an attributeSet for it enabling the program
-  programs = pkgs.lib.genAttrs (import ./programs.nix) (
+  programs = (pkgs.lib.genAttrs (import ./programs.nix) (
     program: {enable = true;}
-  );
+  )) // {
+    password-store = {
+      enable = true;
+      settings = {
+        PASSWORD_STORE_DIR = "$XDG_DATA_HOME/password-store";
+      };
+    };
+  };
 
   # services with a config too simplistic to modularize
   services = {

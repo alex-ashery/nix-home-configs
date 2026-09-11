@@ -7,12 +7,10 @@ in {
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks = lib.optionalAttrs isDarwin {
+    settings = lib.optionalAttrs isDarwin {
       "*" = {
-        extraOptions = {
-          UseKeychain = "yes";
-          AddKeysToAgent = "yes";
-        };
+        UseKeychain = "yes";
+        AddKeysToAgent = "yes";
       };
     };
   };

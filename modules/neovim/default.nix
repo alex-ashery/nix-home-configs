@@ -11,6 +11,8 @@ in
       defaultEditor = true;
       vimAlias = true;
       viAlias = true;
+      withPython3 = true;
+      withRuby = true;
 
       plugins = vimPlugins ++ (with pkgs.vimPlugins; [
         direnv-vim
@@ -35,7 +37,7 @@ in
 
       extraConfig = builtins.readFile ../vim/vimrc;
 
-      extraLuaConfig = builtins.readFile ./lua/init.lua;
+      initLua = builtins.readFile ./lua/init.lua;
     };
   };
 }
