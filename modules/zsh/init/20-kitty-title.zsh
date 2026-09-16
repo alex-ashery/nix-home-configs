@@ -1,3 +1,24 @@
+_kitty_repo_title() {
+  local repo_root repo_parent repo_name worktree_parent worktree_repo
+
+  repo_root="$1"
+  repo_name="${repo_root:t}"
+  repo_parent="${repo_root:h}"
+
+  if [[ "${repo_parent:t}" == ".worktrees" ]]; then
+    REPLY="$repo_name"
+    return
+  fi
+
+  worktree_parent="${repo_parent:h}"
+  if [[ "${worktree_parent:t}" == ".worktrees" ]]; then
+    worktree_repo="${repo_parent:t}"
+    REPLY="${worktree_repo}@${repo_name}"
+  else
+    REPLY="$repo_name"
+  fi
+}
+
 _kitty_apply_tab_title_override() {
   local desired_title repo_root
   local current_title="${_KITTY_APPLIED_TAB_TITLE_OVERRIDE:-}"
@@ -9,7 +30,8 @@ _kitty_apply_tab_title_override() {
   fi
 
   if [ -n "$repo_root" ]; then
-    desired_title="${repo_root:t}"
+    _kitty_repo_title "$repo_root"
+    desired_title="$REPLY"
   else
     desired_title="${PWD/#$HOME/~}"
   fi
