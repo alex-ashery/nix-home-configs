@@ -75,6 +75,39 @@ _repo_branch_completion() {
   (( $#branches )) && compadd -Q -S "" -a branches
 }
 
+_repo_jump_dir_completion() {
+  local repo_root token prefix search_dir dir
+  local -a dir_names candidates
+
+  repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || return
+  token="${words[CURRENT]}"
+
+  if [[ "$token" == */* ]]; then
+    prefix="${token%/*}"
+    search_dir="$repo_root/$prefix"
+    prefix="$prefix/"
+  else
+    prefix=""
+    search_dir="$repo_root"
+  fi
+
+  [[ -d "$search_dir" ]] || return
+
+  dir_names=(
+    "$search_dir"/*(/N:t)
+    "$search_dir"/.[!.]*(/N:t)
+    "$search_dir"/..?*(/N:t)
+  )
+
+  candidates=()
+  for dir in "${dir_names[@]}"; do
+    [[ "$dir" == ".git" ]] && continue
+    candidates+=("$prefix$dir")
+  done
+
+  (( $#candidates )) && compadd -Q -S "/" -a candidates
+}
+
 _dev_cd_worktree_completion() {
   local parts org repo token
   local -a args
@@ -116,6 +149,7 @@ _repo_completion() {
 
   subcommands=(
     'root:change directory to the current repository root'
+    'jump:change directory to a path under the current repository root'
     'wt:create, enter, list, or remove worktrees for the current repository'
     'help:show repo command usage'
   )
@@ -126,7 +160,7 @@ _repo_completion() {
   )
 
   wt_subcommands=(
-    'list:list worktrees for the current repository'
+    'ls:list worktrees for the current repository'
     'cd:change directory to the primary checkout or a named worktree'
     'rm:remove an existing worktree'
     'prune:prune stale git worktree metadata'
@@ -142,6 +176,9 @@ _repo_completion() {
         root)
           _describe -t repo-root-options 'repo root options' root_options
           ;;
+        jump)
+          _repo_jump_dir_completion
+          ;;
         wt)
           _describe -t repo-worktree-subcommands 'repo wt subcommands' wt_subcommands
           ;;
@@ -149,6 +186,9 @@ _repo_completion() {
       ;;
     4)
       case "${words[2]}" in
+        jump)
+          _repo_jump_dir_completion
+          ;;
         wt)
           if [[ "${words[3]}" == "cd" ]]; then
             _repo_branch_completion

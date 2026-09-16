@@ -1,7 +1,7 @@
 _repo_worktree_usage() {
   cat <<'EOF'
 usage:
-  repo wt list
+  repo wt ls
   repo wt cd [name]
   repo wt rm name
   repo wt prune
@@ -12,6 +12,7 @@ _repo_usage() {
   cat <<'EOF'
 usage:
   repo root [-p|--print]
+  repo jump [path]
   repo wt command
 EOF
 }
@@ -144,6 +145,50 @@ _repo_root() {
   esac
 }
 
+_repo_jump() {
+  local repo_root repo_root_resolved target_path target_resolved
+
+  if (( $# > 1 )); then
+    _repo_usage >&2
+    return 1
+  fi
+
+  repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+    echo "repo jump must be run inside a git repository" >&2
+    return 1
+  }
+
+  if (( $# == 0 )); then
+    cd "$repo_root"
+    return
+  fi
+
+  case "$1" in
+    /*)
+      echo "repo jump path must be relative to the repository root" >&2
+      return 1
+      ;;
+  esac
+
+  target_path="$repo_root/$1"
+  if [[ ! -d "$target_path" ]]; then
+    echo "repo jump target is not a directory: $1" >&2
+    return 1
+  fi
+
+  _repo_resolved_dir "$repo_root" || return 1
+  repo_root_resolved="$REPLY"
+  _repo_resolved_dir "$target_path" || return 1
+  target_resolved="$REPLY"
+
+  if [[ "$target_resolved" != "$repo_root_resolved" && "$target_resolved" != "$repo_root_resolved"/* ]]; then
+    echo "repo jump target is outside the repository: $1" >&2
+    return 1
+  fi
+
+  cd "$target_path"
+}
+
 _repo_primary() {
   local primary_path
 
@@ -268,7 +313,7 @@ _repo_worktree() {
     ""|-h|--help|help)
       _repo_worktree_usage
       ;;
-    list)
+    ls)
       _repo_worktree_list "$@"
       ;;
     cd)
@@ -298,6 +343,9 @@ repo() {
   case "$subcommand" in
     root)
       _repo_root "$@"
+      ;;
+    jump)
+      _repo_jump "$@"
       ;;
     wt)
       _repo_worktree "$@"
