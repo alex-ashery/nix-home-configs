@@ -61,6 +61,20 @@ _repo_worktree_name_completion() {
   _worktree_name_completion_for_repo "$org" "$repo"
 }
 
+_repo_branch_completion() {
+  local branch current_branch
+  local -a branches
+
+  current_branch="$(git branch --show-current 2>/dev/null || true)"
+  branches=()
+  while IFS= read -r branch; do
+    [[ -z "$branch" || "$branch" == "$current_branch" ]] && continue
+    branches+=("$branch")
+  done < <(git for-each-ref --format='%(refname:short)' refs/heads 2>/dev/null)
+
+  (( $#branches )) && compadd -Q -S "" -a branches
+}
+
 _dev_cd_worktree_completion() {
   local parts org repo token
   local -a args
@@ -98,11 +112,10 @@ _dev_cd_worktree_completion() {
 }
 
 _repo_completion() {
-  local -a subcommands root_options wt_options
+  local -a subcommands root_options wt_subcommands
 
   subcommands=(
     'root:change directory to the current repository root'
-    'main:change directory to the primary checkout for the current repository'
     'wt:create, enter, list, or remove worktrees for the current repository'
     'help:show repo command usage'
   )
@@ -112,10 +125,11 @@ _repo_completion() {
     '--print:print the current repository root'
   )
 
-  wt_options=(
-    '-r:remove an existing worktree'
-    '--remove:remove an existing worktree'
-    '--prune:prune stale git worktree metadata'
+  wt_subcommands=(
+    'list:list worktrees for the current repository'
+    'cd:change directory to the primary checkout or a named worktree'
+    'rm:remove an existing worktree'
+    'prune:prune stale git worktree metadata'
     'help:show worktree usage'
   )
 
@@ -129,14 +143,16 @@ _repo_completion() {
           _describe -t repo-root-options 'repo root options' root_options
           ;;
         wt)
-          _describe -t repo-worktree-options 'repo wt options' wt_options
+          _describe -t repo-worktree-subcommands 'repo wt subcommands' wt_subcommands
           ;;
       esac
       ;;
     4)
       case "${words[2]}" in
         wt)
-          if [[ "${words[3]}" == "-r" || "${words[3]}" == "--remove" ]]; then
+          if [[ "${words[3]}" == "cd" ]]; then
+            _repo_branch_completion
+          elif [[ "${words[3]}" == "rm" || "${words[3]}" == "remove" ]]; then
             _repo_worktree_name_completion
           fi
           ;;

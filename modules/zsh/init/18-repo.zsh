@@ -1,10 +1,10 @@
 _repo_worktree_usage() {
   cat <<'EOF'
 usage:
-  repo wt
-  repo wt name [base]
-  repo wt -r|--remove name
-  repo wt --prune
+  repo wt list
+  repo wt cd [name]
+  repo wt rm name
+  repo wt prune
 EOF
 }
 
@@ -12,8 +12,7 @@ _repo_usage() {
   cat <<'EOF'
 usage:
   repo root [-p|--print]
-  repo main
-  repo wt [name [base]]
+  repo wt command
 EOF
 }
 
@@ -145,11 +144,11 @@ _repo_root() {
   esac
 }
 
-_repo_main() {
+_repo_primary() {
   local primary_path
 
   if (( $# != 0 )); then
-    _repo_usage >&2
+    _repo_worktree_usage >&2
     return 1
   fi
 
@@ -163,16 +162,19 @@ _repo_main() {
   cd "$primary_path"
 }
 
-_repo_worktree_enter_or_create() {
+_repo_worktree_cd() {
   local name base parts org repo repo_root target_dir path_part
 
-  if (( $# < 1 || $# > 2 )); then
+  if (( $# == 0 )); then
+    _repo_primary
+    return
+  elif (( $# != 1 )); then
     _repo_worktree_usage >&2
     return 1
   fi
 
   name="$1"
-  base="${2:-}"
+  base=""
 
   git check-ref-format --branch "$name" >/dev/null || return 1
 
@@ -256,26 +258,32 @@ _repo_worktree_prune() {
 }
 
 _repo_worktree() {
-  local option="${1:-}"
+  local subcommand="${1:-}"
 
-  case "$option" in
+  if [[ -n "$subcommand" ]]; then
+    shift
+  fi
+
+  case "$subcommand" in
     ""|-h|--help|help)
-      if [[ "$option" == "" ]]; then
-        _repo_worktree_list
-      else
-        _repo_worktree_usage
-      fi
+      _repo_worktree_usage
       ;;
-    -r|--remove)
-      shift
+    list)
+      _repo_worktree_list "$@"
+      ;;
+    cd)
+      _repo_worktree_cd "$@"
+      ;;
+    rm|remove)
       _repo_worktree_remove "$@"
       ;;
-    --prune)
-      shift
+    prune)
       _repo_worktree_prune "$@"
       ;;
     *)
-      _repo_worktree_enter_or_create "$@"
+      echo "unknown repo wt subcommand: $subcommand" >&2
+      echo "run 'repo wt help' for usage" >&2
+      return 1
       ;;
   esac
 }
@@ -290,9 +298,6 @@ repo() {
   case "$subcommand" in
     root)
       _repo_root "$@"
-      ;;
-    main)
-      _repo_main "$@"
       ;;
     wt)
       _repo_worktree "$@"
