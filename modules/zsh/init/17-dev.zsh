@@ -23,7 +23,8 @@ dev() {
       cat <<'EOF'
 usage:
   dev clone [org] repo
-  dev cd [org] repo
+  dev cd [org] repo [-w worktree]
+  dev cd [org] repo@worktree
   dev new [-t template] [repo] | [org repo]
   dev init [-t template] [template]
 EOF

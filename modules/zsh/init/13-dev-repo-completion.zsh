@@ -37,6 +37,114 @@ _dev_template_completion() {
   fi
 }
 
+_worktree_name_completion_for_repo() {
+  local org="$1"
+  local repo="$2"
+  local base_dir
+  local -a worktrees
+
+  base_dir="$HOME/Development/$org/.worktrees/$repo"
+
+  worktrees=("$base_dir"/*(/N:t))
+  (( $#worktrees )) && compadd -Q -S "" -a worktrees
+}
+
+_repo_worktree_name_completion() {
+  local parts org repo
+
+  _repo_current_parts >/dev/null 2>&1 || return
+  parts="$REPLY"
+  org="${parts%%:*}"
+  parts="${parts#*:}"
+  repo="${parts%%:*}"
+
+  _worktree_name_completion_for_repo "$org" "$repo"
+}
+
+_dev_cd_worktree_completion() {
+  local parts org repo token
+  local -a args
+  integer i
+
+  args=()
+  i=3
+  while (( i < CURRENT )); do
+    token="${words[i]}"
+    case "$token" in
+      -w|--worktree)
+        (( i++ ))
+        ;;
+      --worktree=*)
+        ;;
+      -*)
+        ;;
+      *)
+        args+=("$token")
+        ;;
+    esac
+    (( i++ ))
+  done
+
+  if (( ${#args[@]} > 0 )) && [[ "${args[-1]}" == *@* ]]; then
+    args[-1]="${args[-1]%%@*}"
+  fi
+
+  _dev_repo_parts "${args[@]}" >/dev/null 2>&1 || return
+  parts="$REPLY"
+  org="${parts%%:*}"
+  repo="${parts#*:}"
+
+  _worktree_name_completion_for_repo "$org" "$repo"
+}
+
+_repo_completion() {
+  local -a subcommands root_options wt_options
+
+  subcommands=(
+    'root:change directory to the current repository root'
+    'main:change directory to the primary checkout for the current repository'
+    'wt:create, enter, list, or remove worktrees for the current repository'
+    'help:show repo command usage'
+  )
+
+  root_options=(
+    '-p:print the current repository root'
+    '--print:print the current repository root'
+  )
+
+  wt_options=(
+    '-r:remove an existing worktree'
+    '--remove:remove an existing worktree'
+    '--prune:prune stale git worktree metadata'
+    'help:show worktree usage'
+  )
+
+  case $CURRENT in
+    2)
+      _describe -t repo-subcommands 'repo subcommands' subcommands
+      ;;
+    3)
+      case "${words[2]}" in
+        root)
+          _describe -t repo-root-options 'repo root options' root_options
+          ;;
+        wt)
+          _describe -t repo-worktree-options 'repo wt options' wt_options
+          ;;
+      esac
+      ;;
+    4)
+      case "${words[2]}" in
+        wt)
+          if [[ "${words[3]}" == "-r" || "${words[3]}" == "--remove" ]]; then
+            _repo_worktree_name_completion
+          fi
+          ;;
+      esac
+      ;;
+  esac
+}
+
 _dev_completion() {
   local -a subcommands
 
@@ -52,9 +160,9 @@ _dev_completion() {
     2)
       _describe -t dev-subcommands 'dev subcommands' subcommands
       ;;
-    3|4)
+    3|4|5|6)
       case "${words[2]}" in
-        clone|cd)
+        clone)
           local saved_current saved_words
           saved_current=$CURRENT
           saved_words=("${words[@]}")
@@ -63,6 +171,20 @@ _dev_completion() {
           _dev_repo_completion
           words=("${saved_words[@]}")
           CURRENT=$saved_current
+          ;;
+        cd)
+          if [[ "${words[CURRENT - 1]}" == "-w" || "${words[CURRENT - 1]}" == "--worktree" ]]; then
+            _dev_cd_worktree_completion
+          else
+            local saved_current saved_words
+            saved_current=$CURRENT
+            saved_words=("${words[@]}")
+            words=("dev" "${words[@]:2}")
+            CURRENT=$(( saved_current - 1 ))
+            _dev_repo_completion
+            words=("${saved_words[@]}")
+            CURRENT=$saved_current
+          fi
           ;;
         new)
           if [[ "${words[CURRENT - 1]}" == "-t" || "${words[CURRENT - 1]}" == "--template" ]]; then
