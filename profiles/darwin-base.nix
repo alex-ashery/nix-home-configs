@@ -6,6 +6,7 @@
     ../modules/amethyst
     ../modules/copyq
     ../modules/git
+    ../modules/home-manager
     ../modules/kitty
     ../modules/neovim
     ../modules/zsh
@@ -45,7 +46,6 @@
   programs = pkgs.lib.genAttrs [
     "bat"
     "fzf"
-    "home-manager"
     "jq"
   ] (_: {
     enable = true;

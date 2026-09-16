@@ -1,6 +1,7 @@
 [
   ../modules/brave
   ../modules/git
+  ../modules/home-manager
   ../modules/i3
   ../modules/kitty
   ../modules/qutebrowser

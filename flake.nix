@@ -33,6 +33,7 @@
         copyq = ./modules/copyq;
         direnv = ./modules/direnv;
         git = ./modules/git;
+        home-manager = ./modules/home-manager;
         homebrew = ./modules/homebrew;
         kitty = ./modules/kitty;
         llm-cli = ./modules/llm-cli;

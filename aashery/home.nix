@@ -30,6 +30,8 @@ in
     packages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   };
 
+  modules.homeManager.defaultProfile = "aashery";
+
   # For each program in the list, generate an attributeSet for it enabling the program
   programs = (pkgs.lib.genAttrs (import ./programs.nix) (
     program: {enable = true;}

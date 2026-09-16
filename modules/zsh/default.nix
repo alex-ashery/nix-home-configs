@@ -88,7 +88,6 @@ in
         plugins = [ "git" "python" "aws" "colored-man-pages" "jira" "terraform" "kubectl" "fzf" ];
       };
       shellAliases = {
-        hmsf = "f() { home-manager switch --flake .#$1 };f";
         nrsf = "f() { sudo nixos-rebuild switch --flake .#$1 };f";
       };
     };
