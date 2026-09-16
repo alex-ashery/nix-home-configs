@@ -53,7 +53,15 @@ in
   };
 
   config = {
-    home.packages = [ primaryPackage ];
+    programs.codex = lib.mkIf (cfg.primary == "codex") {
+      enable = true;
+      package = primaryPackage;
+    };
+
+    programs.claude-code = lib.mkIf (cfg.primary == "claude-code") {
+      enable = true;
+      package = primaryPackage;
+    };
 
     home.sessionVariables = lib.mkIf (cfg.primary == "codex") {
       CODEX_HOME = "$HOME/.codex";
