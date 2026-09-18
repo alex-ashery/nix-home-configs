@@ -28,6 +28,7 @@ in
   modules.llmCli = {
     primary = "codex";
     packages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+    globalContext.enable = true;
   };
 
   modules.homeManager.defaultProfile = "aashery";
