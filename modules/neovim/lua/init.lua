@@ -1,4 +1,5 @@
 require("aashery.fzf")
+require("aashery.which-key")
 require("aashery.cmp")
 require("aashery.dap")
 require("aashery.lsp")

@@ -1,6 +1,11 @@
 { pkgs, ... }:
 let
   vimPlugins = import ../vim/plugins.nix { inherit pkgs; };
+  sharedKeymaps = map (keymap: {
+    inherit (keymap) mode lhs desc;
+    rhs = keymap.nvimRhs;
+  }) (import ../vim/keymaps.nix);
+  sharedKeymapsJson = builtins.toJSON sharedKeymaps;
 in
 {
   config = {
@@ -17,6 +22,7 @@ in
       plugins = vimPlugins ++ (with pkgs.vimPlugins; [
         direnv-vim
         fzf-lua
+        which-key-nvim
         nvim-lspconfig
         nvim-cmp
         cmp-nvim-lsp
@@ -37,7 +43,11 @@ in
 
       extraConfig = builtins.readFile ../vim/vimrc;
 
-      initLua = builtins.readFile ./lua/init.lua;
+      initLua = ''
+        _G.aashery_shared_keymaps = vim.json.decode(${builtins.toJSON sharedKeymapsJson})
+
+        ${builtins.readFile ./lua/init.lua}
+      '';
     };
   };
 }
