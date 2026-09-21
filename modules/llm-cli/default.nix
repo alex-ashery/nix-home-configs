@@ -3,6 +3,20 @@
 let
   cfg = config.modules.llmCli;
   primaryPackage = cfg.packages.${cfg.primary};
+  primaryCommand = commands.${cfg.primary};
+  defaultCommandPathEntries = [
+    "${config.home.homeDirectory}/.nix-profile/bin"
+    "/etc/profiles/per-user/${config.home.username}/bin"
+    "/nix/var/nix/profiles/default/bin"
+    "/run/current-system/sw/bin"
+    "/opt/homebrew/bin"
+    "/opt/homebrew/sbin"
+    "/usr/local/bin"
+    "/usr/bin"
+    "/bin"
+    "/usr/sbin"
+    "/sbin"
+  ];
   globalContextText = lib.concatStringsSep "\n\n" (
     [
       (builtins.readFile cfg.globalContext.source)
@@ -19,6 +33,15 @@ let
       executable = "claude";
       kittyLaunch = "claude";
     };
+  };
+  wrappedPrimaryPackage = pkgs.symlinkJoin {
+    name = "${primaryPackage.name or cfg.primary}-with-command-path";
+    paths = [ primaryPackage ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram "$out/bin/${primaryCommand.executable}" \
+        --prefix PATH : ${lib.escapeShellArg (lib.concatStringsSep ":" cfg.commandPathEntries)}
+    '';
   };
 in
 {
@@ -55,6 +78,17 @@ in
       defaultText = lib.literalExpression "default launch command for modules.llmCli.primary";
       description = ''
         Command launched by terminal integrations for the selected primary LLM CLI.
+      '';
+    };
+
+    commandPathEntries = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = defaultCommandPathEntries;
+      description = ''
+        PATH entries prepended to the selected LLM CLI wrapper. This keeps
+        Nix-installed tools visible even when the CLI is launched from an app
+        or sandbox environment that did not inherit the interactive shell PATH,
+        without taking ownership of mutable tool configuration files.
       '';
     };
 
@@ -106,12 +140,12 @@ in
     {
       programs.codex = lib.mkIf (cfg.primary == "codex") {
         enable = true;
-        package = primaryPackage;
+        package = wrappedPrimaryPackage;
       };
 
       programs.claude-code = lib.mkIf (cfg.primary == "claude-code") {
         enable = true;
-        package = primaryPackage;
+        package = wrappedPrimaryPackage;
       };
 
       home.sessionVariables = lib.mkIf (cfg.primary == "codex") {
