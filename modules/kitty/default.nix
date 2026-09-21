@@ -1,9 +1,20 @@
 { config, lib, pkgs, ... }:
 let
+  launchFromRepoRootCommand = command: lib.escapeShellArgs [
+    "zsh"
+    "-lc"
+    ''
+      repo_root="$(repo root -p 2>/dev/null || pwd)"
+      cd "$repo_root" || exit
+      exec ${command}
+    ''
+  ];
   llmCliLaunchCommand = lib.attrByPath [ "modules" "llmCli" "kittyLaunchCommand" ] null config;
   llmCliEnabled = llmCliLaunchCommand != null;
+  llmCliKittyLaunchCommand = launchFromRepoRootCommand llmCliLaunchCommand;
   vimEnabled = config.programs.vim.enable || config.programs.neovim.enable;
   vimCommand = if config.programs.neovim.enable then "nvim" else "vim";
+  vimKittyLaunchCommand = launchFromRepoRootCommand "${vimCommand} .";
 in
 {
   config.programs.kitty = {
@@ -21,11 +32,11 @@ in
       "ctrl+shift+up" = "resize_window shorter";
       "ctrl+<" = "move_tab_backward";
       "ctrl+>" = "move_tab_foreward";
-      "ctrl+shift+s" = "launch --type=window --location=vsplit --cwd=current";
+      "ctrl+shift+s" = "launch --type=window --location=vsplit --cwd=current ${launchFromRepoRootCommand "zsh"}";
     } // lib.optionalAttrs llmCliEnabled {
-      "ctrl+alt+c" = "launch --type=window --location=vsplit --cwd=current --title=current ${llmCliLaunchCommand}";
+      "ctrl+alt+c" = "launch --type=window --location=vsplit --cwd=current --title=current ${llmCliKittyLaunchCommand}";
     } // lib.optionalAttrs vimEnabled {
-      "ctrl+alt+v" = "launch --type=overlay-main --cwd=current --title=current ${vimCommand} .";
+      "ctrl+alt+v" = "launch --type=overlay-main --cwd=current --title=current ${vimKittyLaunchCommand}";
     };
     settings = {
       shell = lib.mkIf config.programs.zsh.enable "zsh";
