@@ -73,7 +73,12 @@ The downstream work profile should set work-owned identity and policy locally:
     }
   ];
 
-  modules.zsh.dev.defaultGithubOrg = "work-org";
+  modules.zsh = {
+    dev.defaultGithubOrg = "work-org";
+    additionalInitContent = ''
+      export WORK_REPO_ROOT="$HOME/Development/work"
+    '';
+  };
 
   sops.secrets."git-identity" = {
     sopsFile = ./secrets/work.sops.yaml;
@@ -81,6 +86,12 @@ The downstream work profile should set work-owned identity and policy locally:
   };
 }
 ```
+
+The shared zsh module keeps Home Manager's generated zsh startup files under
+`$XDG_CONFIG_HOME/zsh/home-manager` and points zsh there via `~/.zshenv`.
+The normal `~/.zshrc` remains writable and is sourced at the end of the
+generated config so tool installers can add shell integrations without fighting
+Home Manager's read-only files.
 
 Personal Git identity is loaded from the SOPS-managed `git-identity` secret on
 `aashery-mac`, so the reusable Git module does not expose a default name or

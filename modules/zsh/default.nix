@@ -2,6 +2,8 @@
 let
   cfg = config.modules.zsh;
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+  managedDotDir = "${config.xdg.configHome}/zsh/home-manager";
+  mutableZshrcPath = ".zshrc";
   brewPrefix =
     if pkgs.stdenv.hostPlatform.isAarch64
     then "/opt/homebrew"
@@ -16,31 +18,63 @@ let
     )
   );
   initContent = lib.concatMapStringsSep "\n\n" builtins.readFile initFiles;
+  sharedInitContent = initContent + lib.optionalString isDarwin ''
+    # Make `ls` colors work whether `ls` resolves to GNU or BSD tools.
+    unalias ls 2>/dev/null || true
+    ls() {
+      if command ls --color=auto -d . >/dev/null 2>&1; then
+        command ls --color=auto "$@"
+      else
+        command ls -G "$@"
+      fi
+    }
+  '' + lib.optionalString (cfg.additionalInitContent != "") ''
+
+    ${cfg.additionalInitContent}
+  '';
+  sourceMutableZshrc = ''
+    # Source the normal writable zshrc late so tool installers can append
+    # integrations without modifying Home Manager's generated files.
+    if [[ -r "$HOME/${mutableZshrcPath}" ]]; then
+      source "$HOME/${mutableZshrcPath}"
+    fi
+  '';
 in
 {
-  options.modules.zsh.dev = {
-    defaultGithubOrg = lib.mkOption {
-      type = lib.types.str;
-      default = "alex-ashery";
-      description = "Default GitHub owner used by dev shell helpers.";
+  options.modules.zsh = {
+    additionalInitContent = lib.mkOption {
+      type = lib.types.lines;
+      default = "";
+      example = ''
+        export WORK_REPO_ROOT="$HOME/Development/work"
+      '';
+      description = "Additional zshrc content appended after the shared zsh configuration.";
     };
 
-    flakeTemplateDir = lib.mkOption {
-      type = lib.types.str;
-      default = "$HOME/Development/alex-ashery/nix-templates/templates";
-      description = "Local template directory used for zsh completion.";
-    };
+    dev = {
+      defaultGithubOrg = lib.mkOption {
+        type = lib.types.str;
+        default = "alex-ashery";
+        description = "Default GitHub owner used by dev shell helpers.";
+      };
 
-    localFlakeTemplateSource = lib.mkOption {
-      type = lib.types.str;
-      default = "$HOME/Development/alex-ashery/nix-templates";
-      description = "Local flake template source used by dev init.";
-    };
+      flakeTemplateDir = lib.mkOption {
+        type = lib.types.str;
+        default = "$HOME/Development/alex-ashery/nix-templates/templates";
+        description = "Local template directory used for zsh completion.";
+      };
 
-    remoteFlakeTemplateSource = lib.mkOption {
-      type = lib.types.str;
-      default = "github:alex-ashery/nix-templates";
-      description = "Remote flake template source fallback used by dev init.";
+      localFlakeTemplateSource = lib.mkOption {
+        type = lib.types.str;
+        default = "$HOME/Development/alex-ashery/nix-templates";
+        description = "Local flake template source used by dev init.";
+      };
+
+      remoteFlakeTemplateSource = lib.mkOption {
+        type = lib.types.str;
+        default = "github:alex-ashery/nix-templates";
+        description = "Remote flake template source fallback used by dev init.";
+      };
     };
   };
 
@@ -55,6 +89,7 @@ in
     programs.zsh = {
       enable = true;
       enableCompletion = true;
+      dotDir = managedDotDir;
       plugins = [
         {
           name = "powerlevel10k";
@@ -62,17 +97,10 @@ in
           file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
         }
       ];
-      initContent = initContent + lib.optionalString isDarwin ''
-        # Make `ls` colors work whether `ls` resolves to GNU or BSD tools.
-        unalias ls 2>/dev/null || true
-        ls() {
-          if command ls --color=auto -d . >/dev/null 2>&1; then
-            command ls --color=auto "$@"
-          else
-            command ls -G "$@"
-          fi
-        }
-      '';
+      initContent = lib.mkMerge [
+        sharedInitContent
+        (lib.mkOrder 2000 sourceMutableZshrc)
+      ];
       envExtra = lib.optionalString isDarwin ''
         if [ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
           . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
@@ -94,5 +122,12 @@ in
     home.file = {
       ".zsh/p10k.zsh".source = ./p10k.zsh;
     };
+
+    home.activation.ensureMutableZshrc = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      mutable_zshrc="$HOME/${mutableZshrcPath}"
+      if [ ! -e "$mutable_zshrc" ]; then
+        touch "$mutable_zshrc"
+      fi
+    '';
   };
 }
