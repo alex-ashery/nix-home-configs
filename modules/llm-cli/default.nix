@@ -34,13 +34,23 @@ let
       kittyLaunch = "claude";
     };
   };
+  wrapperArgs =
+    (lib.optionals cfg.loadDirenvEnvironment [
+      "--run"
+      ''eval "$(${pkgs.direnv}/bin/direnv export bash 2>/dev/null || true)"''
+    ])
+    ++ [
+      "--prefix"
+      "PATH"
+      ":"
+      (lib.concatStringsSep ":" cfg.commandPathEntries)
+    ];
   wrappedPrimaryPackage = pkgs.symlinkJoin {
     name = "${primaryPackage.name or cfg.primary}-with-command-path";
     paths = [ primaryPackage ];
     nativeBuildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
-      wrapProgram "$out/bin/${primaryCommand.executable}" \
-        --prefix PATH : ${lib.escapeShellArg (lib.concatStringsSep ":" cfg.commandPathEntries)}
+      wrapProgram "$out/bin/${primaryCommand.executable}" ${lib.escapeShellArgs wrapperArgs}
     '';
   };
 in
@@ -89,6 +99,17 @@ in
         Nix-installed tools visible even when the CLI is launched from an app
         or sandbox environment that did not inherit the interactive shell PATH,
         without taking ownership of mutable tool configuration files.
+      '';
+    };
+
+    loadDirenvEnvironment = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Whether the selected LLM CLI wrapper should import the direnv environment
+        for the launch directory before starting the CLI. This makes project
+        dev-shell tools visible when launching the LLM CLI from a repository with
+        an allowed .envrc, while quietly doing nothing outside direnv projects.
       '';
     };
 
