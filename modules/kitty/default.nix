@@ -31,6 +31,8 @@ in
       shell = lib.mkIf config.programs.zsh.enable "zsh";
       enable_audio_bell = "no";
       font_size = "15.0";
+      initial_window_width = "1200";
+      initial_window_height = "800";
       active_border_color = "red";
       draw_minimal_borders = "no";
     };
