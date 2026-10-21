@@ -6,7 +6,9 @@ end
 
 which_key.setup({
   preset = "classic",
-  triggers = {},
+  triggers = {
+    { "<leader>g", mode = "n" },
+  },
   icons = {
     mappings = false,
   },
@@ -38,6 +40,7 @@ end
 which_key.add({
   { "<leader>c", group = "code" },
   { "<leader>d", group = "diagnostics" },
+  { "<leader>g", group = "git" },
   { "<leader>l", group = "lists" },
   { "<leader>x", group = "debug" },
 })
