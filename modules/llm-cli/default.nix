@@ -2,8 +2,8 @@
 
 let
   cfg = config.modules.llmCli;
-  primaryPackage = cfg.packages.${cfg.primary};
-  primaryCommand = commands.${cfg.primary};
+  toolType = lib.types.enum [ "codex" "claude-code" ];
+  enabledTools = lib.unique cfg.tools;
   defaultCommandPathEntries = [
     "${config.home.homeDirectory}/.nix-profile/bin"
     "/etc/profiles/per-user/${config.home.username}/bin"
@@ -45,23 +45,33 @@ let
       ":"
       (lib.concatStringsSep ":" cfg.commandPathEntries)
     ];
-  wrappedPrimaryPackage = pkgs.symlinkJoin {
-    name = "${primaryPackage.name or cfg.primary}-with-command-path";
-    paths = [ primaryPackage ];
+  wrappedPackage = tool: let
+    package = cfg.packages.${tool};
+  in pkgs.symlinkJoin {
+    name = "${package.name or tool}-with-command-path";
+    paths = [ package ];
     nativeBuildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
-      wrapProgram "$out/bin/${primaryCommand.executable}" ${lib.escapeShellArgs wrapperArgs}
+      wrapProgram "$out/bin/${commands.${tool}.executable}" ${lib.escapeShellArgs wrapperArgs}
     '';
   };
 in
 {
   options.modules.llmCli = {
     primary = lib.mkOption {
-      type = lib.types.enum [ "codex" "claude-code" ];
+      type = toolType;
       default = "codex";
       description = ''
-        Primary LLM CLI to install and configure for this Home Manager profile.
+        Primary LLM CLI used by terminal integrations. It must be included in tools.
       '';
+    };
+
+    tools = lib.mkOption {
+      type = lib.types.listOf toolType;
+      default = [ cfg.primary ];
+      defaultText = lib.literalExpression "[ config.modules.llmCli.primary ]";
+      example = [ "codex" "claude-code" ];
+      description = "LLM CLIs to install and configure for this Home Manager profile.";
     };
 
     packages = lib.mkOption {
@@ -70,8 +80,8 @@ in
       defaultText = lib.literalExpression "pkgs";
       example = lib.literalExpression "inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}";
       description = ''
-        Package set used for the selected primary LLM CLI. It must provide
-        package attributes matching the supported primary values.
+        Package set used for the selected LLM CLIs. It must provide
+        package attributes matching every selected tool.
       '';
     };
 
@@ -95,7 +105,7 @@ in
       type = lib.types.listOf lib.types.str;
       default = defaultCommandPathEntries;
       description = ''
-        PATH entries prepended to the selected LLM CLI wrapper. This keeps
+        PATH entries prepended to each selected LLM CLI wrapper. This keeps
         Nix-installed tools visible even when the CLI is launched from an app
         or sandbox environment that did not inherit the interactive shell PATH,
         without taking ownership of mutable tool configuration files.
@@ -106,7 +116,7 @@ in
       type = lib.types.bool;
       default = true;
       description = ''
-        Whether the selected LLM CLI wrapper should import the direnv environment
+        Whether each selected LLM CLI wrapper should import the direnv environment
         for the launch directory before starting the CLI. This makes project
         dev-shell tools visible when launching the LLM CLI from a repository with
         an allowed .envrc, while quietly doing nothing outside direnv projects.
@@ -118,7 +128,7 @@ in
         type = lib.types.bool;
         default = false;
         description = ''
-          Whether to install shared global instructions for the selected LLM CLI.
+          Whether to install shared global instructions for every selected LLM CLI.
         '';
       };
 
@@ -127,7 +137,7 @@ in
         default = ./global-context.md;
         defaultText = lib.literalExpression "./global-context.md";
         description = ''
-          Markdown file used as global context for the selected LLM CLI.
+          Markdown file used as global context for every selected LLM CLI.
         '';
       };
 
@@ -136,7 +146,7 @@ in
         default = [ ];
         example = lib.literalExpression "[ ./work-context.md ]";
         description = ''
-          Additional Markdown files appended to the selected LLM CLI's global context.
+          Additional Markdown files appended to each selected LLM CLI's global context.
         '';
       };
 
@@ -149,7 +159,7 @@ in
           - Prefer the internal package registry for new dependencies.
         '';
         description = ''
-          Additional Markdown text appended to the selected LLM CLI's global context.
+          Additional Markdown text appended to each selected LLM CLI's global context.
           This option is mergeable, so consuming profiles can add local context
           without replacing the shared base file.
         '';
@@ -159,21 +169,28 @@ in
 
   config = lib.mkMerge [
     {
-      programs.codex = lib.mkIf (cfg.primary == "codex") {
+      assertions = [
+        {
+          assertion = lib.elem cfg.primary enabledTools;
+          message = "modules.llmCli.tools must include modules.llmCli.primary.";
+        }
+      ];
+
+      programs.codex = lib.mkIf (lib.elem "codex" enabledTools) {
         enable = true;
-        package = wrappedPrimaryPackage;
+        package = wrappedPackage "codex";
       };
 
-      programs.claude-code = lib.mkIf (cfg.primary == "claude-code") {
+      programs.claude-code = lib.mkIf (lib.elem "claude-code" enabledTools) {
         enable = true;
-        package = wrappedPrimaryPackage;
+        package = wrappedPackage "claude-code";
       };
 
-      home.sessionVariables = lib.mkIf (cfg.primary == "codex") {
+      home.sessionVariables = lib.mkIf (lib.elem "codex" enabledTools) {
         CODEX_HOME = "$HOME/.codex";
       };
 
-      programs.zsh.initContent = lib.mkIf (cfg.primary == "codex") ''
+      programs.zsh.initContent = lib.mkIf (lib.elem "codex" enabledTools) ''
         # Ensure trust/history are persisted in a stable location.
         export CODEX_HOME="$HOME/.codex"
       '';
@@ -181,10 +198,10 @@ in
 
     (lib.mkIf cfg.globalContext.enable {
       home.file = lib.mkMerge [
-        (lib.mkIf (cfg.primary == "codex") {
+        (lib.mkIf (lib.elem "codex" enabledTools) {
           ".codex/AGENTS.md".text = globalContextText;
         })
-        (lib.mkIf (cfg.primary == "claude-code") {
+        (lib.mkIf (lib.elem "claude-code" enabledTools) {
           ".claude/CLAUDE.md".text = globalContextText;
         })
       ];

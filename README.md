@@ -25,6 +25,24 @@ Linux (NixOS):
 - The agent does not persist keys across logins; run once per login/session:
   `ssh-add ~/.ssh/id_ed25519`
 
+## LLM CLIs
+
+The `llm-cli` module can install both Codex and Claude Code:
+
+```nix
+modules.llmCli = {
+  tools = [ "codex" "claude-code" ];
+  primary = "codex";
+};
+```
+
+`primary` selects the CLI used by terminal integrations such as Kitty's
+`ctrl+alt+c` shortcut and must be included in `tools`. By default, `tools`
+contains only `primary`, preserving existing single-tool configurations.
+Each selected tool receives the PATH/direnv wrapper and, when enabled, the
+shared global instructions. The caller-provided `packages` set supplies all
+selected tools.
+
 ## Using this repo as an upstream
 
 This repo exposes reusable Home Manager modules and profile bundles for use from

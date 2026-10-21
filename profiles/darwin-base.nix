@@ -27,6 +27,7 @@
       nerd-fonts.meslo-lg
       ripgrep
       yq
+      tree
     ];
     sessionPath = [ "/usr/local/bin" ];
     sessionVariables = {

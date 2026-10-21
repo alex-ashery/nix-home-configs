@@ -32,12 +32,14 @@ in {
       "docker-desktop"
       "signal"
       "pinta"
+      "nordvpn"
     ];
 
     autoBundleOnSwitch = true;
   };
 
   modules.homeManager.defaultProfile = "aashery-mac";
+  modules.llmCli.tools = [ "codex" "claude-code" ];
 
   sops = lib.mkIf hasPersonalSopsFile {
     age.keyFile = "/Users/${uname}/.config/sops/age/keys.txt";
