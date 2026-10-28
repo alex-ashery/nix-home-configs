@@ -16,4 +16,6 @@
   ../modules/direnv
   ../modules/ssh
   ../modules/llm-cli
+  ../modules/tuicr
+  ../modules/crit
 ]

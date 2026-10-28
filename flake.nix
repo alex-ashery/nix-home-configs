@@ -5,6 +5,10 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     llm-agents.url = "github:numtide/llm-agents.nix";
+    crit = {
+      url = "github:tomasz-tomczyk/crit";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -31,6 +35,7 @@
       homeManagerModules = {
         amethyst = ./modules/amethyst;
         copyq = ./modules/copyq;
+        crit = ./modules/crit;
         direnv = ./modules/direnv;
         git = ./modules/git;
         home-manager = ./modules/home-manager;
@@ -39,6 +44,7 @@
         llm-cli = ./modules/llm-cli;
         neovim = ./modules/neovim;
         ssh = ./modules/ssh;
+        tuicr = ./modules/tuicr;
         zsh = ./modules/zsh;
       };
 

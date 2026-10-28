@@ -14,6 +14,8 @@
     ../modules/homebrew
     ../modules/ssh
     ../modules/llm-cli
+    ../modules/tuicr
+    ../modules/crit
   ];
 
   fonts.fontconfig.enable = true;
@@ -57,6 +59,12 @@
     packages = lib.mkDefault inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
     globalContext.enable = lib.mkDefault true;
   };
+
+  modules.tuicr = {
+    enable = lib.mkDefault true;
+    package = lib.mkDefault pkgs.unstable.tuicr;
+  };
+  modules.crit.package = lib.mkDefault inputs.crit.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   nix.package = null;
 }

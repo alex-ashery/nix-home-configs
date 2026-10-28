@@ -31,6 +31,12 @@ in
     globalContext.enable = true;
   };
 
+  modules.tuicr = {
+    enable = true;
+    package = pkgs.unstable.tuicr;
+  };
+  modules.crit.package = inputs.crit.packages.${pkgs.stdenv.hostPlatform.system}.default;
+
   modules.homeManager.defaultProfile = "aashery";
 
   # For each program in the list, generate an attributeSet for it enabling the program

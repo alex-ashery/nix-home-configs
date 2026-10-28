@@ -2,6 +2,7 @@
 let
   llmCliLaunchCommand = lib.attrByPath [ "modules" "llmCli" "kittyLaunchCommand" ] null config;
   llmCliEnabled = llmCliLaunchCommand != null;
+  tuicrLaunchCommand = lib.attrByPath [ "modules" "tuicr" "kittyLaunchCommand" ] null config;
   vimEnabled = config.programs.vim.enable || config.programs.neovim.enable;
   vimCommand = if config.programs.neovim.enable then "nvim" else "vim";
 in
@@ -26,6 +27,8 @@ in
       "ctrl+alt+c" = "launch --type=window --location=vsplit --cwd=current --title=current ${llmCliLaunchCommand}";
     } // lib.optionalAttrs vimEnabled {
       "ctrl+alt+v" = "launch --type=overlay-main --cwd=current --title=current ${vimCommand} .";
+    } // lib.optionalAttrs (tuicrLaunchCommand != null) {
+      "ctrl+alt+r" = "launch --type=window --location=vsplit --cwd=current --title=current ${tuicrLaunchCommand}";
     };
     settings = {
       shell = lib.mkIf config.programs.zsh.enable "zsh";

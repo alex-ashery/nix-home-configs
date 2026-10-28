@@ -85,6 +85,22 @@ in
       '';
     };
 
+    skills = lib.mkOption {
+      type = lib.types.attrsOf lib.types.path;
+      default = { };
+      example = lib.literalExpression ''
+        {
+          my-skill = ./skills/my-skill;
+        }
+      '';
+      description = ''
+        Shared skill directories, keyed by skill name. Each directory must contain
+        a SKILL.md and is linked into ~/.agents/skills. When Claude Code is selected,
+        ~/.claude/skills links to that shared directory as well. Other skills in
+        the shared directory remain writable.
+      '';
+    };
+
     executable = lib.mkOption {
       type = lib.types.str;
       readOnly = true;
@@ -185,6 +201,19 @@ in
         enable = true;
         package = wrappedPackage "claude-code";
       };
+
+      home.file = lib.mkMerge [
+        (lib.mapAttrs' (name: source:
+          lib.nameValuePair ".agents/skills/${name}" {
+            inherit source;
+          }
+        ) cfg.skills)
+        (lib.mkIf (lib.elem "claude-code" enabledTools) {
+          ".claude/skills" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.agents/skills";
+          };
+        })
+      ];
 
       home.sessionVariables = lib.mkIf (lib.elem "codex" enabledTools) {
         CODEX_HOME = "$HOME/.codex";
