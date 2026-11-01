@@ -2,6 +2,8 @@
 
 let
     uname = "aashery";
+    personalSopsFile = ../secrets/personal.sops.yaml;
+    hasPersonalSopsFile = builtins.pathExists personalSopsFile;
 in
 {
   fonts.fontconfig.enable = true;
@@ -39,10 +41,23 @@ in
 
   modules.homeManager.defaultProfile = "aashery";
 
+  sops = lib.mkIf hasPersonalSopsFile {
+    age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
+    secrets."git-identity" = {
+      sopsFile = personalSopsFile;
+      path = "${config.xdg.configHome}/git/secrets/identity";
+    };
+  };
+
   # For each program in the list, generate an attributeSet for it enabling the program
   programs = (pkgs.lib.genAttrs (import ./programs.nix) (
     program: {enable = true;}
   )) // {
+    git.includes = lib.optionals hasPersonalSopsFile [
+      {
+        path = config.sops.secrets."git-identity".path;
+      }
+    ];
     password-store = {
       enable = true;
       settings = {
@@ -53,6 +68,7 @@ in
 
   # services with a config too simplistic to modularize
   services = {
+    lxqt-policykit-agent.enable = true;
     picom.enable = true;
     # betterlockscreen = {
     #   enable = true;

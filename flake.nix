@@ -63,7 +63,10 @@
             inherit inputs outputs;
             keyMap = import ./keymap.nix;
           };
-          modules = [ ./aashery/home.nix ];
+          modules = [
+            sops-nix.homeManagerModules.sops
+            ./aashery/home.nix
+          ];
         };
         "aashery-mac" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.${macSystem};

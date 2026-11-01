@@ -32,4 +32,7 @@ with pkgs; [
     hunspell
     hunspellDicts.uk_UA
     hunspellDicts.th_TH
+    discord
+    mediawriter
+    podman
 ]

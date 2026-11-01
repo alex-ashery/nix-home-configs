@@ -9,10 +9,15 @@ Enable the dev shell automatically with `direnv allow`
 
 This repo uses sops-nix to provide personal secrets to personal profiles.
 The current personal secrets file includes the GitHub access token used by Nix
-on macOS and the Git identity fragment used by `aashery-mac`.
+on macOS and the Git identity fragment used by `aashery` and `aashery-mac`.
 - Add an age key at `~/.config/sops/age/keys.txt` by running `age-keygen -o ~/.config/sops/age/keys.txt`.
-- Update the encrypted secret by adding your age public key as a recipient (so you can decrypt):
-   `sops --add-age age1YOURPUBLICKEY -i secrets/personal.sops.yaml`
+- Obtain your public recipient with `age-keygen -y ~/.config/sops/age/keys.txt`
+  and add it to the `age` list in `.sops.yaml`, preserving existing recipients.
+- On a machine whose key can already decrypt the secret, update the encrypted
+  recipients (changing `.sops.yaml` alone does not grant access):
+  `SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt" sops updatekeys secrets/personal.sops.yaml`
+- Sync both `.sops.yaml` and `secrets/personal.sops.yaml` to the new machine,
+  then apply Home Manager and run `systemctl --user restart sops-nix` on Linux.
 
 ## SSH key passphrases
 
@@ -112,7 +117,7 @@ generated config so tool installers can add shell integrations without fighting
 Home Manager's read-only files.
 
 Personal Git identity is loaded from the SOPS-managed `git-identity` secret on
-`aashery-mac`, so the reusable Git module does not expose a default name or
+`aashery` and `aashery-mac`, so the reusable Git module does not expose a default name or
 email. Downstream work repos should provide their own identity locally, ideally
 by adding a SOPS-managed Git config fragment to `programs.git.includes`.
 
