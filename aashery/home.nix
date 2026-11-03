@@ -29,7 +29,9 @@ in
 
   modules.llmCli = {
     primary = "codex";
-    packages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+    packages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system} // {
+      codex = pkgs.unstable.codex;
+    };
     globalContext.enable = true;
   };
 

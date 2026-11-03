@@ -56,7 +56,9 @@
 
   modules.llmCli = {
     primary = lib.mkDefault "codex";
-    packages = lib.mkDefault inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+    packages = lib.mkDefault (inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system} // {
+      codex = pkgs.unstable.codex;
+    });
     globalContext.enable = lib.mkDefault true;
   };
 
